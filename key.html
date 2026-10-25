@@ -35,7 +35,7 @@ body {
   50% { opacity: 0.8; }
 }
 
-/* 背景光晕（改为紫色，去掉发黄的感觉） */
+/* 背景光晕 */
 .orb {
   position: fixed; border-radius: 50%; filter: blur(120px);
   pointer-events: none; z-index: 0; opacity: .15;
@@ -84,24 +84,13 @@ body {
 h2 { margin-bottom: 8px; font-size: 22px; font-weight: 800; letter-spacing: 1px; color: #fff; }
 p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.6); line-height: 1.5; }
 
-/* 二维码相框（缩小了白边内距） */
-.qr-wrap {
-  background: #fff;
-  padding: 8px;
-  border-radius: 16px;
-  display: inline-block;
-  margin-bottom: 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  position: relative;
-}
 /* 二维码外发光容器 */
 .qr-container {
   position: relative;
   display: inline-block;
   margin-bottom: 26px;
-  padding: 2px; /* 留出 2px 给渐变边框 */
+  padding: 2px;
   border-radius: 22px;
-  /* 提取了你二维码里的紫色和黄色渐变 */
   background: linear-gradient(135deg, #8b5cf6, #29b6f6, #eab308); 
   box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 25px rgba(139, 92, 246, 0.3);
   animation: float 4s ease-in-out infinite;
@@ -113,25 +102,25 @@ p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.6); line-
   background: #fff;
   padding: 10px;
   border-radius: 20px;
-  overflow: hidden; /* 确保扫描线不出界 */
+  overflow: hidden;
 }
 
-/* 图片样式 */
+/* 图片样式（已放大） */
 .qr-wrap img {
   display: block;
-  width: 200px;
-  height: 200px;
+  width: 220px;
+  height: 220px;
   object-fit: contain;
   border-radius: 10px;
 }
 
-/* 科技感扫描线 */
+/* 科技感扫描线（已变细） */
 .scan-line {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 3px;
+  height: 2px;
   background: linear-gradient(90deg, transparent, #8b5cf6, #eab308, transparent);
   box-shadow: 0 0 12px #8b5cf6, 0 0 4px #eab308;
   animation: scan 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
@@ -151,7 +140,7 @@ p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.6); line-
   100% { top: 105%; opacity: 0; }
 }
 
-/* 返回首页按钮（美化） */
+/* 返回首页按钮 */
 .back-btn {
   display: flex;
   align-items: center;
@@ -190,19 +179,7 @@ p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.6); line-
   <h2>获取密钥</h2>
   <p>扫描下方二维码联系管理员<br>购买并获取验证密钥</p>
   
+  <!-- 这里加了 ?v=2 强制刷新缓存 -->
   <div class="qr-container">
-  <div class="qr-wrap">
-    <img src="qrcode.jpg" alt="扫码获取密钥" onerror="this.src='https://via.placeholder.com/210x210?text=请将图片命名为+qrcode.jpg'">
-    <!-- 动态扫描线 -->
-    <div class="scan-line"></div>
-  </div>
-</div>
-  
-  <a href="index.html" class="back-btn">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-    返回首页
-  </a>
-</div>
-
-</body>
-</html>
+    <div class="qr-wrap">
+      <img src="qrcode.jpg
