@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>一加文件中转站</title>
+<title>满天星 - OnePlus</title>
 <style>
 @property --angle {
   syntax: '<angle>';
@@ -33,7 +33,6 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
-
 .bg-grid {
   position: fixed;
   inset: 0;
@@ -71,7 +70,6 @@ body {
   0%, 100% { transform: translate(0, 0) scale(1); }
   50%      { transform: translate(-50px, 40px) scale(1.2); }
 }
-
 /* 卡片（渐变流光描边） */
 .card {
   position: relative;
@@ -89,14 +87,12 @@ body {
     cardIn .85s cubic-bezier(.2, .8, .2, 1) both,
     spin 9s linear infinite;
 }
-
 @keyframes spin { to { --angle: 360deg; } }
 
 @keyframes cardIn {
   from { opacity: 0; transform: translateY(22px) scale(.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
-
 .card-inner {
   position: relative;
   isolation: isolate;
@@ -113,7 +109,6 @@ body {
   z-index: 2;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .42), transparent);
 }
-
 .spotlight {
   position: absolute;
   inset: 0;
@@ -160,18 +155,32 @@ body {
   background: linear-gradient(160deg, rgba(255, 255, 255, .34), transparent 46%);
   pointer-events: none;
 }
-
 h1 {
   margin-bottom: 10px;
-  font-size: 25px;
-  font-weight: 800;
-  letter-spacing: .5px;
-  background: linear-gradient(100deg, #ffffff 8%, #b9ccff 55%, #d9b6ff 95%);
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  background: linear-gradient(100deg, #ffffff 10%, #b9ccff 55%, #d9b6ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  text-shadow: 0 0 15px rgba(185, 204, 255, 0.2);
 }
-
+.brand {
+  font-size: 16px;
+  font-weight: 800;
+  font-family: "Arial", -apple-system, sans-serif;
+  letter-spacing: 0;
+  background: linear-gradient(135deg, #ff4d4d, #d81b1b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 12px rgba(255, 77, 77, 0.4);
+}
 .meta {
   display: inline-flex;
   align-items: center;
@@ -497,13 +506,13 @@ h1 {
 
       <header class="head">
         <div class="logo">1+</div>
-        <h1>一加文件中转站</h1>
+        <h1>满天星 <span class="brand">OnePlus</span></h1>
         <div class="meta"><span class="dot"></span>资源已就绪 · 点击直达</div>
       </header>
 
       <nav class="btns">
         <!-- SukiSU 按钮（带加密验证） -->
-        <a class="btn btn-suki" id="btnSuki" href="javascript:void(0);">
+        <a class="btn btn-suki" href="suki.html">
           <span class="icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
@@ -601,7 +610,7 @@ h1 {
         </a>
         
         <!-- 获取密钥（弹二维码） -->
-        <a class="btn btn-key" id="btnKey" href="javascript:void(0);">
+        <a class="btn btn-key" href="key.html">
           <span class="icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
@@ -623,35 +632,6 @@ h1 {
     </div>
   </main>
 
-  <!-- 密码验证弹窗 -->
-  <div class="modal-overlay" id="passModal">
-    <div class="modal-content">
-      <div class="modal-title">输入验证密钥</div>
-      <div class="modal-sub">获取 SukiSU 需验证购买密钥</div>
-      <input type="password" class="modal-input" id="passInput" placeholder="请输入密钥" autocomplete="off">
-      <div class="modal-err" id="passErr"></div>
-      <div class="modal-btns">
-        <button class="modal-btn btn-cancel" id="passCancel">取消</button>
-        <button class="modal-btn btn-confirm" id="passConfirm">验证</button>
-      </div>
-    </div>
-  </div>
-
-<!-- 二维码弹窗 -->
-  <div class="modal-overlay" id="qrModal">
-    <div class="modal-content">
-      <div class="modal-title">扫码获取密钥</div>
-      <div class="modal-sub">扫描下方二维码联系管理员</div>
-      <div class="qr-wrap">
-        <!-- 请确保将你的二维码图片命名为 qrcode.jpg 放在同级目录 -->
-        <img src="qrcode.jpg" alt="扫码获取密钥" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'><rect width=\'200\' height=\'200\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' font-size=\'14\' text-anchor=\'middle\' fill=\'%23999\'>请将图片命名为<br>qrcode.jpg</text></svg>'">
-      </div>
-      <div class="modal-btns">
-        <button class="modal-btn btn-confirm" id="qrClose">关闭</button>
-      </div>
-    </div>
-  </div>
-
 <script>
   // ---------- 鼠标跟随光斑 ----------
   (function () {
@@ -667,7 +647,7 @@ h1 {
   
   // ---------- 密码验证及加密逻辑 ----------
   (function () {
-    // 实际密码 H70528 进行了 +2 ASCII 码偏移加密
+    // +2 ASCII 码偏移加密
     const ENCRYPTED_PASS = "J9274:";
     const SUKI_URL = "https://www.123684.com/s/YXhyVv-kcWsH";
 

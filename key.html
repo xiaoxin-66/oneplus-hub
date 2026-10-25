@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>获取密钥</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #06080f;
+  color: #eef2ff;
+  font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* 背景光晕 */
+.orb {
+  position: fixed; border-radius: 50%; filter: blur(100px);
+  pointer-events: none; z-index: 0; opacity: .5;
+}
+.orb-1 { width: 350px; height: 350px; background: #eab308; top: -100px; right: -100px; opacity: 0.3; }
+.orb-2 { width: 350px; height: 350px; background: #8b3bff; bottom: -100px; left: -100px; }
+
+/* 卡片容器 */
+.card {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(160deg, #151d33, #0a0f1c);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 35px 25px;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 顶部图标 */
+.icon {
+  width: 60px; height: 60px;
+  margin: 0 auto 16px;
+  border-radius: 18px;
+  display: grid; place-items: center;
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  color: #eab308;
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
+}
+
+h2 { margin-bottom: 8px; font-size: 22px; font-weight: 800; }
+p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.5); line-height: 1.5; }
+
+/* 二维码 */
+.qr-wrap {
+  background: #fff;
+  padding: 12px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+.qr-wrap::after {
+  content: '';
+  position: absolute; inset: -2px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #eab308, transparent 60%);
+  z-index: -1;
+  opacity: 0.5;
+}
+img {
+  display: block;
+  width: 210px; height: 210px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* 按钮 */
+a {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+a:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+a:active { transform: translateY(0); }
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="card">
+  <div class="icon">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+    </svg>
+  </div>
+  <h2>获取密钥</h2>
+  <p>扫描下方二维码联系管理员<br>购买并获取验证密钥</p>
+  
+  <div class="qr-wrap">
+    <!-- 确保 qrcode.jpg 和本文件在同级目录 -->
+    <img src="qrcode.jpg" alt="扫码获取密钥" onerror="this.src='https://via.placeholder.com/210x210?text=请将图片命名为+qrcode.jpg'">
+  </div>
+  
+  <a href="index.html">返回首页</a>
+</div>
+
+</body>
+</html>
