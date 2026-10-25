@@ -10,7 +10,7 @@ body {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 50% 0%, #111827 0%, #03050a 100%);
+  background: radial-gradient(circle at 50% 0%, #0d1425 0%, #04060a 100%);
   color: #eef2ff;
   font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   padding: 20px;
@@ -31,25 +31,25 @@ body {
   animation: twinkle 4s infinite alternate;
 }
 @keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.8; }
 }
 
-/* 背景光晕 */
+/* 背景光晕（改为紫色，去掉发黄的感觉） */
 .orb {
-  position: fixed; border-radius: 50%; filter: blur(100px);
-  pointer-events: none; z-index: 0; opacity: .4;
+  position: fixed; border-radius: 50%; filter: blur(120px);
+  pointer-events: none; z-index: 0; opacity: .15;
 }
-.orb-1 { width: 350px; height: 350px; background: #eab308; top: -100px; right: -100px; opacity: 0.25; }
+.orb-1 { width: 350px; height: 350px; background: #eab308; top: -100px; right: -100px; opacity: 0.1; }
 .orb-2 { width: 350px; height: 350px; background: #8b3bff; bottom: -100px; left: -100px; }
 
 /* 毛玻璃卡片 */
 .card {
   position: relative;
   z-index: 1;
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(13, 18, 30, 0.85);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 35px 25px;
   border-radius: 24px;
@@ -64,75 +64,116 @@ body {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* 顶部图标（呼吸发光） */
+/* 顶部图标 */
 .icon {
-  width: 60px; height: 60px;
+  width: 64px; height: 64px;
   margin: 0 auto 16px;
-  border-radius: 18px;
+  border-radius: 20px;
   display: grid; place-items: center;
-  background: rgba(234, 179, 8, 0.12);
+  background: rgba(234, 179, 8, 0.1);
   border: 1px solid rgba(234, 179, 8, 0.3);
   color: #eab308;
-  box-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.15);
   animation: iconPulse 3s infinite alternate;
 }
 @keyframes iconPulse {
-  from { box-shadow: 0 0 10px rgba(234, 179, 8, 0.2); }
-  to { box-shadow: 0 0 25px rgba(234, 179, 8, 0.6); }
+  from { box-shadow: 0 0 10px rgba(234, 179, 8, 0.1); }
+  to { box-shadow: 0 0 30px rgba(234, 179, 8, 0.5); }
 }
 
-h2 { margin-bottom: 8px; font-size: 22px; font-weight: 800; letter-spacing: 1px; }
-p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.5); line-height: 1.5; }
+h2 { margin-bottom: 8px; font-size: 22px; font-weight: 800; letter-spacing: 1px; color: #fff; }
+p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.6); line-height: 1.5; }
 
-/* 二维码相框 */
+/* 二维码相框（缩小了白边内距） */
 .qr-wrap {
   background: #fff;
-  padding: 12px;
-  border-radius: 20px;
+  padding: 8px;
+  border-radius: 16px;
   display: inline-block;
   margin-bottom: 24px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
   position: relative;
 }
-.qr-wrap::after {
-  content: '';
-  position: absolute; inset: -2px;
+/* 二维码外发光容器 */
+.qr-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 26px;
+  padding: 2px; /* 留出 2px 给渐变边框 */
   border-radius: 22px;
-  background: linear-gradient(135deg, #eab308, transparent 60%);
-  z-index: -1;
-  opacity: 0.6;
-  filter: blur(4px);
-}
-img {
-  display: block;
-  width: 210px; height: 210px;
-  object-fit: contain;
-  border-radius: 8px;
+  /* 提取了你二维码里的紫色和黄色渐变 */
+  background: linear-gradient(135deg, #8b5cf6, #29b6f6, #eab308); 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 25px rgba(139, 92, 246, 0.3);
+  animation: float 4s ease-in-out infinite;
 }
 
-/* 按钮 */
-a {
+/* 二维码内部白底 */
+.qr-wrap {
+  position: relative;
+  background: #fff;
+  padding: 10px;
+  border-radius: 20px;
+  overflow: hidden; /* 确保扫描线不出界 */
+}
+
+/* 图片样式 */
+.qr-wrap img {
   display: block;
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+/* 科技感扫描线 */
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  padding: 15px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8b5cf6, #eab308, transparent);
+  box-shadow: 0 0 12px #8b5cf6, 0 0 4px #eab308;
+  animation: scan 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* 悬浮呼吸动画 */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* 扫描动画 */
+@keyframes scan {
+  0% { top: -5%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 105%; opacity: 0; }
+}
+
+/* 返回首页按钮（美化） */
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 14px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 15px;
   font-weight: bold;
-  cursor: pointer;
   text-decoration: none;
   transition: all 0.3s;
-  backdrop-filter: blur(10px);
 }
-a:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.25);
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
 }
-a:active { transform: translateY(0); }
+.back-btn:active { transform: translateY(0); }
 </style>
 </head>
 <body>
@@ -149,12 +190,18 @@ a:active { transform: translateY(0); }
   <h2>获取密钥</h2>
   <p>扫描下方二维码联系管理员<br>购买并获取验证密钥</p>
   
+  <div class="qr-container">
   <div class="qr-wrap">
-    <!-- 确保 qrcode.jpg 和本文件在同级目录 -->
     <img src="qrcode.jpg" alt="扫码获取密钥" onerror="this.src='https://via.placeholder.com/210x210?text=请将图片命名为+qrcode.jpg'">
+    <!-- 动态扫描线 -->
+    <div class="scan-line"></div>
   </div>
+</div>
   
-  <a href="index.html">返回首页</a>
+  <a href="index.html" class="back-btn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    返回首页
+  </a>
 </div>
 
 </body>
