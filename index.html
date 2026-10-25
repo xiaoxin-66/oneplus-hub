@@ -358,13 +358,11 @@ h1 {
 .btn-key:hover .icon { box-shadow: inset 0 0 0 1px rgba(234, 179, 8, .45), 0 0 18px -4px rgba(234, 179, 8, .7); }
 
 /* 弹窗 */
-.modal-overlay {
+..modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, .75);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(6, 8, 15, 0.92); /* 改用纯深色遮罩，去掉模糊 */
   display: grid;
   place-items: center;
   padding: 24px;
@@ -372,6 +370,7 @@ h1 {
   pointer-events: none;
   transition: opacity .3s ease;
 }
+
 .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
 .modal-content {
