@@ -96,25 +96,30 @@ p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.6); line-
   animation: float 4s ease-in-out infinite;
 }
 
-/* 二维码内部白底 */
+/* 二维码内部白底（固定宽高，防止加载失败时塌陷） */
 .qr-wrap {
   position: relative;
   background: #fff;
   padding: 10px;
   border-radius: 20px;
   overflow: hidden;
+  width: 240px;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 图片样式（已放大） */
+/* 图片样式 */
 .qr-wrap img {
   display: block;
-  width: 220px;
-  height: 220px;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 保证图片填满但不变形 */
   border-radius: 10px;
 }
 
-/* 科技感扫描线（已变细） */
+/* 科技感扫描线 */
 .scan-line {
   position: absolute;
   top: 0;
@@ -124,15 +129,14 @@ p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.6); line-
   background: linear-gradient(90deg, transparent, #8b5cf6, #eab308, transparent);
   box-shadow: 0 0 12px #8b5cf6, 0 0 4px #eab308;
   animation: scan 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  z-index: 10;
 }
 
-/* 悬浮呼吸动画 */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
 
-/* 扫描动画 */
 @keyframes scan {
   0% { top: -5%; opacity: 0; }
   10% { opacity: 1; }
@@ -179,7 +183,19 @@ p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.6); line-
   <h2>获取密钥</h2>
   <p>扫描下方二维码联系管理员<br>购买并获取验证密钥</p>
   
-  <!-- 这里加了 ?v=2 强制刷新缓存 -->
-  <div class="qr-container">
+<div class="qr-container">
     <div class="qr-wrap">
-      <img src="qrcode.jpg
+      <!-- 这里我加了 ?v=3 强制刷新缓存，图片名依然叫 qrcode.jpg -->
+      <img src="qrcode.jpg?v=3" alt="扫码获取密钥">
+      <div class="scan-line"></div>
+    </div>
+  </div>
+  
+  <a href="index.html" class="back-btn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    返回首页
+  </a>
+</div>
+
+</body>
+</html>
