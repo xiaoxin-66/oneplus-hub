@@ -35,7 +35,7 @@ body {
   50% { opacity: 0.8; }
 }
 
-/* 背景光晕（压暗） */
+/* 背景光晕 */
 .orb {
   position: fixed; border-radius: 50%; filter: blur(120px);
   pointer-events: none; z-index: 0; opacity: .15;
@@ -81,7 +81,8 @@ body {
   to { box-shadow: 0 0 30px rgba(59, 157, 255, 0.5); }
 }
 
-h2 { margin-bottom: 8px; font-size: 22px; font-weight: 800; letter-spacing: 1px; color: #fff; }
+/* 标题加入一个隐藏的点击生成功能 */
+h2 { margin-bottom: 8px; font-size: 22px; font-weight: 800; letter-spacing: 1px; color: #fff; cursor: pointer; user-select: none; }
 p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.6); line-height: 1.5; }
 
 /* 输入框 */
@@ -135,7 +136,7 @@ button {
 button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(59, 157, 255, 0.5); }
 button:active { transform: translateY(0); }
 
-/* 返回首页按钮（美化） */
+/* 返回首页按钮 */
 .back-btn {
   display: inline-flex;
   align-items: center;
@@ -164,7 +165,8 @@ button:active { transform: translateY(0); }
       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
     </svg>
   </div>
-  <h2>SukiSU 验证</h2>
+  <!-- 双击这个标题可以生成密钥 -->
+  <h2 id="titleText">SukiSU 验证</h2>
   <p>该资源为付费内容<br>请输入您购买后获取的密钥</p>
   
   <div class="input-group">
@@ -181,11 +183,22 @@ button:active { transform: translateY(0); }
 </div>
 
 <script>
+// 👇【你的加密密钥池】你可以往数组里无限添加新的加密字符串
+// 加密版 J9274:
+const VALID_ENCRYPTED_KEYS = [
+  "J9274:"
+  "J:41;23" 
+];
+
 function verify() {
   const val = document.getElementById('pass').value.trim();
+  if(!val) return;
+  
+  // 将用户输入的明文转为密文
   const enc = val.split('').map(c => String.fromCharCode(c.charCodeAt(0) + 2)).join('');
   
-  if (enc === "J9274:") {
+  // 如果密文在数组中存在，就通过
+  if (VALID_ENCRYPTED_KEYS.includes(enc)) {
     window.location.href = "https://www.123684.com/s/YXhyVv-kcWsH";
   } else {
     const err = document.getElementById('err');
@@ -195,8 +208,35 @@ function verify() {
     setTimeout(() => { card.classList.remove('shake'); }, 400);
   }
 }
+
 document.getElementById('pass').addEventListener('input', () => {
   document.getElementById('err').classList.remove('show');
+});
+
+// ==========================================
+// 👇 【管理员隐藏功能】生成随机密钥
+// 操作：在手机上连续点击两次（或双击）"SukiSU 验证"这几个字
+// ==========================================
+let clickCount = 0;
+let clickTimer = null;
+
+document.getElementById('titleText').addEventListener('click', function() {
+  clickCount++;
+  if (clickCount === 2) {
+    // 生成一个 6 位随机密钥 (例如 H83921)
+    const randomNum = Math.floor(10000 + Math.random() * 90000);
+    const newKey = `H${randomNum}`;
+    
+    // 加密这个新密钥
+    const encryptedKey = newKey.split('').map(c => String.fromCharCode(c.charCodeAt(0) + 2)).join('');
+    
+    // 弹窗告诉管理员
+    alert(`✅ 已生成新密钥！\n\n明文（发给买家）：${newKey}\n\n复制下面这串代码，加到源码的 VALID_ENCRYPTED_KEYS 数组里才能生效：\n"${encryptedKey}"`);
+    
+    clickCount = 0;
+  }
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(() => { clickCount = 0; }, 500); // 500ms内点两次生效
 });
 </script>
 </body>
