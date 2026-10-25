@@ -30,10 +30,7 @@ body {
   background-size: 300px 200px;
   animation: twinkle 4s infinite alternate;
 }
-@keyframes twinkle {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 0.8; }
-}
+@keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; } }
 
 /* 背景光晕 */
 .orb {
@@ -103,7 +100,7 @@ input {
 input::placeholder { letter-spacing: normal; color: rgba(255, 255, 255, 0.35); }
 input:focus { border-color: #3b9dff; box-shadow: 0 0 15px rgba(59, 157, 255, 0.3); background: rgba(0, 0, 0, 0.7); }
 
-/* 错误提示 */
+/* 错误提示及倒计时 */
 .err {
   color: #ff4d4d; font-size: 12px;
   height: 18px; margin-bottom: 12px;
@@ -132,8 +129,22 @@ button {
   box-shadow: 0 8px 20px rgba(59, 157, 255, 0.3);
   margin-bottom: 24px;
 }
-button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(59, 157, 255, 0.5); }
-button:active { transform: translateY(0); }
+button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(59, 157, 255, 0.5); }
+button:active:not(:disabled) { transform: translateY(0); }
+
+/* 禁用状态下的按钮和输入框 */
+button:disabled {
+  background: #2a3245;
+  color: rgba(255, 255, 255, 0.3);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+input:disabled {
+  background: rgba(0, 0, 0, 0.8);
+  color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.05);
+  cursor: not-allowed;
+}
 
 /* 返回首页按钮 */
 .back-btn {
@@ -170,9 +181,11 @@ button:active { transform: translateY(0); }
   <div class="input-group">
     <input type="password" id="pass" placeholder="请输入密钥" autocomplete="off">
   </div>
-  <div class="err" id="err">密钥错误，请重新输入</div>
   
-  <button onclick="verify()">验证并前往下载</button>
+  <!-- 错误与倒计时提示 -->
+  <div class="err" id="err"></div>
+  
+  <button id="verifyBtn" onclick="verify()">验证并前往下载</button>
   
   <a href="index.html" class="back-btn">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -181,35 +194,125 @@ button:active { transform: translateY(0); }
 </div>
 
 <script>
+// ================= 配置区 =================
+const MAX_TRIES = 5;            // 最多允许错误次数
+const LOCK_TIME = 10 * 60 * 1000; // 锁定时间：10分钟（单位毫秒）
+// ==========================================
+
+const passInput = document.getElementById('pass');
+const verifyBtn = document.getElementById('verifyBtn');
+const errText = document.getElementById('err');
+const card = document.getElementById('card');
+let timerInterval = null;
+
+// 页面加载时，检查是否处于锁定状态
+window.onload = function() {
+  checkLockStatus();
+};
+
 function verify() {
-  const val = document.getElementById('pass').value.trim();
+  const val = passInput.value.trim();
   if(!val) return;
-  
+
   // 将用户输入的内容进行加密（每个字符的 ASCII 码 + 2）
   const enc = val.split('').map(c => String.fromCharCode(c.charCodeAt(0) + 2)).join('');
   
-  // 唯一正确的密钥
+  // 验证逻辑："H70528" -> "J9274:"
   if (enc === "J9274:") {
-    // 验证成功，直接在当前窗口跳转（防止被某些浏览器拦截新窗口）
+    // 验证成功，清除错误记录
+    localStorage.removeItem('suki_fail_count');
+    localStorage.removeItem('suki_lock_until');
+    // 直接跳转
     window.location.href = "https://www.123684.com/s/YXhyVv-kcWsH";
   } else {
-    // 验证失败，显示错误并抖动
-    const err = document.getElementById('err');
-    const card = document.getElementById('card');
-    err.classList.add('show');
-    card.classList.add('shake');
-    setTimeout(() => { card.classList.remove('shake'); }, 400);
+    // 验证失败逻辑
+    handleFail();
   }
 }
 
+function handleFail() {
+  // 获取当前错误次数
+  let failCount = parseInt(localStorage.getItem('suki_fail_count') || '0');
+  failCount++;
+  localStorage.setItem('suki_fail_count', failCount);
+
+  // 计算剩余次数
+  const remain = MAX_TRIES - failCount;
+
+  // 抖动特效
+  card.classList.add('shake');
+  setTimeout(() => { card.classList.remove('shake'); }, 400);
+
+  if (failCount >= MAX_TRIES) {
+    // 次数用尽，触发锁定
+    const lockUntil = Date.now() + LOCK_TIME;
+    localStorage.setItem('suki_lock_until', lockUntil);
+    checkLockStatus();
+  } else {
+    // 未达上限，提示剩余次数
+    showError(`密钥错误，您还有 ${remain} 次尝试机会`);
+    passInput.value = '';
+    passInput.focus();
+  }
+}
+
+function showError(msg) {
+  errText.innerText = msg;
+  errText.classList.add('show');
+}
+
+function checkLockStatus() {
+  const lockUntil = localStorage.getItem('suki_lock_until');
+  
+  if (lockUntil && Date.now() < lockUntil) {
+    // 处于锁定状态
+    passInput.disabled = true;
+    verifyBtn.disabled = true;
+    
+    // 启动倒计时
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      const now = Date.now();
+      const left = lockUntil - now;
+      
+      if (left <= 0) {
+        // 倒计时结束，解除锁定
+        clearInterval(timerInterval);
+        localStorage.removeItem('suki_fail_count');
+        localStorage.removeItem('suki_lock_until');
+        unlockInputs();
+      } else {
+        // 更新倒计时文字 (分:秒)
+        const m = Math.floor(left / 60000);
+        const s = Math.floor((left % 60000) / 1000);
+        showError(`错误次数过多，请 ${m}分${s < 10 ? '0'+s : s}秒 后重试`);
+      }
+    }, 1000);
+  } else {
+    // 未锁定状态，清理过期记录
+    if (lockUntil) {
+      localStorage.removeItem('suki_fail_count');
+      localStorage.removeItem('suki_lock_until');
+    }
+    unlockInputs();
+  }
+}
+
+function unlockInputs() {
+  passInput.disabled = false;
+  verifyBtn.disabled = false;
+  errText.classList.remove('show');
+  passInput.value = '';
+}
+
 // 监听输入事件，用户重新输入时隐藏错误提示
-document.getElementById('pass').addEventListener('input', () => {
-  document.getElementById('err').classList.remove('show');
+passInput.addEventListener('input', () => {
+  errText.classList.remove('show');
 });
 
-// 监听回车键，按回车也能触发验证
-document.getElementById('pass').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
+// 监听回车键
+passInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !verifyBtn.disabled) {
     verify();
   }
 });
