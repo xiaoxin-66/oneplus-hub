@@ -807,35 +807,30 @@ font-size: 11.5px;
     }
   });
 
-  ballWrap.addEventListener('pointerup', (e) => {
-    if (!isDragging) return;
-    isDragging = false;
-    ballWrap.releasePointerCapture(e.pointerId);
+ballWrap.addEventListener('pointerup', (e) => {
+  if (!isDragging) return;
+  isDragging = false;
+  ballWrap.releasePointerCapture(e.pointerId);
 
-    // 如果没有移动（只是点击），则切换面板
-    if (!hasMoved) {
+  // 如果没有移动（只是点击）
+  if (!hasMoved) {
+    if (!isPlaying) {
+      // 第一次点：自动播放并展开面板
+      if (!bgMusic.src) loadSong(0);
+      togglePlay();
+      musicWidget.classList.add('active');
+    } else {
+      // 第二次点：纯粹开关面板
       musicWidget.classList.toggle('active');
     }
-  });
-
+  }
+});
   // 处理拖拽取消
   ballWrap.addEventListener('pointercancel', (e) => {
     isDragging = false;
     ballWrap.releasePointerCapture(e.pointerId);
   });
 
-  // ========== 自动播放逻辑 ==========
-  let autoPlayTriggered = false;
-  document.addEventListener('pointerdown', function() {
-    if (!isPlaying && !autoPlayTriggered && !isDragging) {
-      autoPlayTriggered = true;
-      if (!bgMusic.src) {
-        loadSong(0);
-      }
-      togglePlay();
-      musicWidget.classList.add('active');
-    }
-  }, { once: true });
 </script>
 </body>
 </html>
