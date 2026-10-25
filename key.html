@@ -10,33 +10,53 @@ body {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: #06080f;
+  background: radial-gradient(circle at 50% 0%, #111827 0%, #03050a 100%);
   color: #eef2ff;
   font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   padding: 20px;
   overflow: hidden;
 }
 
+/* 满天星背景 */
+.stars {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 20px 30px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 160px 120px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 230px 80px, #fff, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 300px 200px;
+  animation: twinkle 4s infinite alternate;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
 /* 背景光晕 */
 .orb {
   position: fixed; border-radius: 50%; filter: blur(100px);
-  pointer-events: none; z-index: 0; opacity: .5;
+  pointer-events: none; z-index: 0; opacity: .4;
 }
-.orb-1 { width: 350px; height: 350px; background: #eab308; top: -100px; right: -100px; opacity: 0.3; }
+.orb-1 { width: 350px; height: 350px; background: #eab308; top: -100px; right: -100px; opacity: 0.25; }
 .orb-2 { width: 350px; height: 350px; background: #8b3bff; bottom: -100px; left: -100px; }
 
-/* 卡片容器 */
+/* 毛玻璃卡片 */
 .card {
   position: relative;
   z-index: 1;
-  background: linear-gradient(160deg, #151d33, #0a0f1c);
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 35px 25px;
   border-radius: 24px;
   width: 100%;
   max-width: 360px;
   text-align: center;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 @keyframes slideUp {
@@ -44,7 +64,7 @@ body {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* 顶部图标 */
+/* 顶部图标（呼吸发光） */
 .icon {
   width: 60px; height: 60px;
   margin: 0 auto 16px;
@@ -54,12 +74,17 @@ body {
   border: 1px solid rgba(234, 179, 8, 0.3);
   color: #eab308;
   box-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
+  animation: iconPulse 3s infinite alternate;
+}
+@keyframes iconPulse {
+  from { box-shadow: 0 0 10px rgba(234, 179, 8, 0.2); }
+  to { box-shadow: 0 0 25px rgba(234, 179, 8, 0.6); }
 }
 
-h2 { margin-bottom: 8px; font-size: 22px; font-weight: 800; }
+h2 { margin-bottom: 8px; font-size: 22px; font-weight: 800; letter-spacing: 1px; }
 p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.5); line-height: 1.5; }
 
-/* 二维码 */
+/* 二维码相框 */
 .qr-wrap {
   background: #fff;
   padding: 12px;
@@ -75,7 +100,8 @@ p { margin-bottom: 24px; font-size: 13px; color: rgba(214, 226, 255, 0.5); line-
   border-radius: 22px;
   background: linear-gradient(135deg, #eab308, transparent 60%);
   z-index: -1;
-  opacity: 0.5;
+  opacity: 0.6;
+  filter: blur(4px);
 }
 img {
   display: block;
@@ -98,16 +124,19 @@ a {
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s;
+  backdrop-filter: blur(10px);
 }
 a:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
 }
 a:active { transform: translateY(0); }
 </style>
 </head>
 <body>
+<div class="stars"></div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 
