@@ -32,20 +32,22 @@ body {
   background-image: radial-gradient(circle at 50% 0%, #0d1425 0%, #04060a 100%);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  user-select: none; /* 防复制文字 */
 }
 
-/* 鼠标拖尾画布 */
+/* 鼠标拖尾与点击星尘画布 */
 #trailCanvas {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
   pointer-events: none;
-  z-index: 0; /* 放在背景层，不会遮挡点击 */
+  z-index: 999;
+  background: transparent; /* 👈 加这一行，确保画布本身绝对透明 */
 }
 
 /* 满天星背景 */
 .stars {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
   background-image: 
     radial-gradient(1.5px 1.5px at 20px 30px, #fff, rgba(0,0,0,0)),
     radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
@@ -63,8 +65,8 @@ body {
 }
 
 .orb {
-  position: fixed;
-  z-index: 0;
+position: fixed;
+  z-index: 1;
   border-radius: 50%;
   filter: blur(120px);
   pointer-events: none;
@@ -77,15 +79,18 @@ body {
 /* 卡片 */
 .card {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   width: 100%;
   max-width: 432px;
-  padding: 1.5px;
+  /* 从 1.5px 增加到 2.5px，给手机渲染留出空间 */
+  padding: 2.5px; 
   border-radius: 28px;
   background: conic-gradient(from var(--angle),
     #2f6bff, #8b5cf6 22%, #ff4d6d 42%, #ff9d3d 58%, #2f6bff 78%, #2f6bff 100%);
   box-shadow: 0 34px 90px -28px rgba(0, 0, 0, .92), 0 0 80px -32px rgba(90, 120, 255, .6);
   animation: cardIn .85s cubic-bezier(.2, .8, .2, 1) both, spin 9s linear infinite;
+  /* 防止溢出 */
+  overflow: hidden;
 }
 
 @keyframes spin { to { --angle: 360deg; } }
@@ -98,12 +103,15 @@ body {
   position: relative;
   isolation: isolate;
   padding: 34px 22px 22px;
-  border-radius: 26.5px;
+  /* 内层圆角稍微减小，匹配加粗后的边框 */
+  border-radius: 25.5px; 
   overflow: hidden;
   background: rgba(13, 18, 30, 0.85);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  /* 加上这行，强制开启硬件加速，杜绝渲染断层 */
+  transform: translateZ(0); 
 }
 
 .spotlight {
@@ -117,12 +125,52 @@ body {
 }
 .card:hover .spotlight { opacity: 1; }
 
+/* ================= 公告栏 ================= */
+.notice-bar {
+  position: relative;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #ffca6b;
+  overflow: hidden;
+}
+
+.notice-icon {
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.notice-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 单段文字从右侧 100% 处滑入，滑到 -100% 处消失 */
+.notice-text {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%; 
+  animation: marquee 12s linear infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
 /* 头部 */
 .head {
   position: relative;
   z-index: 1;
   text-align: center;
-  margin-bottom: 26px;
+  margin-bottom: 20px;
 }
 
 .logo {
@@ -139,7 +187,6 @@ body {
   color: #fff;
   background: linear-gradient(145deg, #ff4d4d, #ff3b30 40%, #d81b1b);
   box-shadow: 0 14px 34px -8px rgba(255, 60, 60, .55), inset 0 1px 0 rgba(255, 255, 255, .45);
-  /* 开启硬件加速，防止闪烁 */
   transform: translateZ(0);
 }
 .logo::after {
@@ -152,7 +199,7 @@ body {
 }
 
 h1 {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-size: 26px;
   font-weight: 900;
   letter-spacing: 1px;
@@ -165,13 +212,14 @@ h1 {
   justify-content: center;
   gap: 8px;
   animation: titlePulse 3s infinite alternate;
-  transform: translateZ(0); /* 硬件加速防闪烁 */
+  transform: translateZ(0);
 }
 
 @keyframes titlePulse {
   from { filter: drop-shadow(0 0 4px rgba(185, 204, 255, 0.3)); }
   to { filter: drop-shadow(0 0 15px rgba(185, 204, 255, 0.8)) drop-shadow(0 0 20px rgba(217, 182, 255, 0.5)); }
 }
+
 .brand {
   font-size: 16px;
   font-weight: 800;
@@ -182,6 +230,15 @@ h1 {
   background-clip: text;
   color: transparent;
   text-shadow: 0 0 12px rgba(255, 77, 77, 0.4);
+}
+
+/* 动态一言 + 状态标签区 */
+.meta-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
 .meta {
@@ -195,6 +252,14 @@ h1 {
   color: var(--muted);
   background: rgba(255, 255, 255, .045);
   border: 1px solid rgba(255, 255, 255, .07);
+}
+
+.quote {
+  font-size: 12px;
+  color: #a0b0d0;
+  font-style: italic;
+  opacity: 0.8;
+  letter-spacing: 0.5px;
 }
 
 .dot {
@@ -234,7 +299,7 @@ h1 {
   transition: transform .3s cubic-bezier(.2, .8, .2, 1), border-color .3s ease, background .3s ease, box-shadow .3s ease;
   animation: rise .65s cubic-bezier(.2, .8, .2, 1) both;
   cursor: pointer;
-  transform: translateZ(0); /* 防止按钮闪动 */
+  transform: translateZ(0);
 }
 
 .btn:nth-child(1) { animation-delay: .10s; }
@@ -334,6 +399,7 @@ h1 {
   color: var(--accent);
 }
 
+/* 按钮主题色 */
 .btn-suki { --accent: #3b9dff; }
 .btn-suki .icon { background: rgba(59, 157, 255, .13); box-shadow: inset 0 0 0 1px rgba(59, 157, 255, .22); }
 .btn-suki:hover { border-color: rgba(59, 157, 255, .42); background: linear-gradient(135deg, rgba(59, 157, 255, .10), rgba(255, 255, 255, .02)); box-shadow: 0 16px 36px -16px rgba(59, 157, 255, .85); }
@@ -357,14 +423,24 @@ h1 {
 .btn-key { --accent: #eab308; }
 .btn-key .icon { background: rgba(234, 179, 8, .13); box-shadow: inset 0 0 0 1px rgba(234, 179, 8, .22); }
 .btn-key:hover { border-color: rgba(234, 179, 8, .42); background: linear-gradient(135deg, rgba(234, 179, 8, .10), rgba(255, 255, 255, .02)); box-shadow: 0 16px 36px -16px rgba(234, 179, 8, .85); }
+
+/* 底部信息 */
 .foot {
   position: relative;
   z-index: 1;
-  margin-top: 22px;
+  margin-top: 24px;
   text-align: center;
   font-size: 11px;
   letter-spacing: .4px;
   color: rgba(214, 226, 255, .35);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.visitor-count {
+  font-size: 10px;
+  color: rgba(214, 226, 255, 0.25);
 }
 
 @media (max-width: 400px) {
@@ -392,20 +468,29 @@ h1 {
     <div class="card-inner">
       <div class="spotlight" aria-hidden="true"></div>
 
+      <!-- 顶部公告 -->
+<div class="notice-bar">
+  <span class="notice-icon">📢</span>
+  <div class="notice-content">
+    <span class="notice-text">最新通知：SukiSU 和 BakaSU 推迟更新，感谢大家的支持！</span>
+  </div>
+</div>
+
       <header class="head">
         <div class="logo">1+</div>
         <h1>满天星 <span class="brand">OnePlus</span></h1>
-        <div class="meta"><span class="dot"></span>资源已就绪 · 点击直达</div>
+        
+        <div class="meta-group">
+          <div class="meta"><span class="dot"></span>资源已就绪 · 点击直达</div>
+          <!-- 随机一言 -->
+          <div class="quote" id="dailyQuote">保持热爱，奔赴山海。</div>
+        </div>
       </header>
 
       <nav class="btns">
         <a class="btn btn-suki" href="suki.html">
           <span class="icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-              <line x1="12" y1="22.08" x2="12" y2="12"/>
-            </svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
           </span>
           <span class="text">
             <span class="label">获取 SukiSU <span class="tag tag-paid">💰 收费</span></span>
@@ -416,11 +501,7 @@ h1 {
 
         <a class="btn btn-baka" href="https://1816791544.share.123pan.cn/123pan/YXhyVv-ru7KH" target="_blank" rel="noopener noreferrer">
           <span class="icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="3" y="8" width="18" height="4" rx="1"/>
-              <path d="M12 8v13M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>
-              <path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/>
-            </svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>
           </span>
           <span class="text">
             <span class="label">获取 BakaSU <span class="tag tag-free">🆓 限免</span></span>
@@ -431,12 +512,7 @@ h1 {
 
         <a class="btn btn-env" href="https://www.123684.com/s/YXhyVv-4Yx2H" target="_blank" rel="noopener noreferrer">
           <span class="icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-              <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
-              <line x1="1" y1="1" x2="23" y2="23"/>
-            </svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
           </span>
           <span class="text">
             <span class="label">获取环境隐藏模块 <span class="tag tag-free">🆓 免费</span></span>
@@ -447,9 +523,7 @@ h1 {
 
         <a class="btn btn-qq" href="https://pd.qq.com/s/1yattoxwb?b=9" target="_blank" rel="noopener noreferrer">
           <span class="icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-            </svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
           </span>
           <span class="text">
             <span class="label">进入官方社区</span>
@@ -460,10 +534,7 @@ h1 {
 
         <a class="btn btn-tg" href="https://t.me/OnePlusXingQiu" target="_blank" rel="noopener noreferrer">
           <span class="icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="22" y1="2" x2="11" y2="13"/>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-            </svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </span>
           <span class="text">
             <span class="label">进入官方TG社区 <span class="tag tag-vpn">需VPN</span></span>
@@ -474,9 +545,7 @@ h1 {
 
         <a class="btn btn-key" href="key.html">
           <span class="icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-            </svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
           </span>
           <span class="text">
             <span class="label">获取密钥</span>
@@ -486,12 +555,17 @@ h1 {
         </a>
       </nav>
 
-      <footer class="foot">链接均在新标签页打开</footer>
+      <footer class="foot">
+        <div>链接均在新标签页打开</div>
+        <div class="visitor-count" style="color: rgba(214, 226, 255, 0.4); font-size: 10.5px;">
+  ✨ 满天星守护者 · 感谢你的到来 ✨
+</div>
+      </footer>
     </div>
   </main>
 
 <script>
-  // 鼠标跟随光斑逻辑
+  // 1. 鼠标跟随光斑逻辑
   (function () {
     const inner = document.querySelector('.card-inner');
     if(!inner) return;
@@ -503,7 +577,22 @@ h1 {
     });
   })();
 
-  // 星光拖尾粒子效果
+  // 2. 每日随机金句
+  (function () {
+    const quotes = [
+      "保持热爱，奔赴山海。",
+      "星空不问赶路人，时光不负有心人。",
+      "万物皆有裂痕，那是光照进来的地方。",
+      "愿你眼里有星辰，身边有微风。",
+      "且将新火试新茶，诗酒趁年华。",
+      "星光不问赶路人，岁月不负有心人。",
+      "满天星河，你是人间理想。"
+    ];
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('dailyQuote').innerText = randomQuote;
+  })();
+
+  // 3. 星光拖尾与点击绽放粒子特效
   (function() {
     const canvas = document.getElementById('trailCanvas');
     const ctx = canvas.getContext('2d');
@@ -517,6 +606,7 @@ h1 {
     window.addEventListener('resize', resize);
     resize();
 
+    // 监听移动（拖尾）
     window.addEventListener('pointermove', function(e) {
       for (let i = 0; i < 2; i++) {
         particles.push({
@@ -527,6 +617,24 @@ h1 {
           life: 1,
           size: Math.random() * 2 + 1,
           color: Math.random() > 0.5 ? '185, 204, 255' : (Math.random() > 0.5 ? '217, 182, 255' : '255, 255, 255')
+        });
+      }
+    });
+
+    // 监听点击（绽放）
+    window.addEventListener('pointerdown', function(e) {
+      // 点击时爆发 15 个粒子
+      for (let i = 0; i < 15; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 4 + 1;
+        particles.push({
+          x: e.clientX,
+          y: e.clientY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          size: Math.random() * 2.5 + 1.5,
+          color: Math.random() > 0.5 ? '255, 107, 107' : (Math.random() > 0.5 ? '234, 179, 8' : '185, 204, 255')
         });
       }
     });
@@ -552,6 +660,33 @@ h1 {
       requestAnimationFrame(animate);
     }
     animate();
+  })();
+
+  // 4. 防审查元素（防右键、防 F12）
+  (function() {
+    // 禁止右键菜单
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+    
+    // 禁止 F12 和常用审查快捷键
+    document.addEventListener('keydown', function(e) {
+      // 禁止 F12
+      if (e.key === 'F12' || e.keyCode === 123) {
+        e.preventDefault();
+        return false;
+      }
+      // 禁止 Ctrl+Shift+I / Ctrl+Shift+C / Ctrl+Shift+J
+      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'C' || e.key === 'c' || e.key === 'J' || e.key === 'j')) {
+        e.preventDefault();
+        return false;
+      }
+      // 禁止 Ctrl+U (查看源码)
+      if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+        e.preventDefault();
+        return false;
+      }
+    });
   })();
 </script>
 </body>
