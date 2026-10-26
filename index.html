@@ -23,16 +23,21 @@ html, body { height: 100%; }
 
 body {
   min-height: 100dvh;
-  display: grid;
-  place-items: center;
+  /* 👇 替换为下面 4 行 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 28px 18px;
+  /* 👆 */
   font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
   color: var(--text);
   background: #04060a;
   background-image: radial-gradient(circle at 50% 0%, #0d1425 0%, #04060a 100%);
+  /* 👇 允许上下滑动，底部不会再被切掉 */
+  overflow-y: auto; 
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  user-select: none; /* 防复制文字 */
+  user-select: none;
 }
 
 /* 鼠标拖尾与点击星尘画布 */
@@ -80,16 +85,17 @@ position: fixed;
 .card {
   position: relative;
   z-index: 10;
-  width: 100%;
+  width: 100%; /* 在 flex 下，它会乖乖占满减去 padding 后的 100% */
   max-width: 432px;
-  /* 从 1.5px 增加到 2.5px，给手机渲染留出空间 */
-  padding: 2.5px; 
+  padding: 2px; /* 边框厚度 */
   border-radius: 28px;
   background: conic-gradient(from var(--angle),
     #2f6bff, #8b5cf6 22%, #ff4d6d 42%, #ff9d3d 58%, #2f6bff 78%, #2f6bff 100%);
   box-shadow: 0 34px 90px -28px rgba(0, 0, 0, .92), 0 0 80px -32px rgba(90, 120, 255, .6);
   animation: cardIn .85s cubic-bezier(.2, .8, .2, 1) both, spin 9s linear infinite;
-  /* 防止溢出 */
+  
+  /* 👇 只留这一行防闪，去掉之前的 will-change 防止尺寸崩坏 */
+  transform: translateZ(0);
   overflow: hidden;
 }
 
@@ -103,15 +109,11 @@ position: fixed;
   position: relative;
   isolation: isolate;
   padding: 34px 22px 22px;
-  /* 内层圆角稍微减小，匹配加粗后的边框 */
-  border-radius: 25.5px; 
+  border-radius: 26px; /* 外层 28px 减去内边距 2px，完美贴合 */
   overflow: hidden;
-  background: rgba(13, 18, 30, 0.85);
+  background: rgba(13, 18, 30, 0.9); 
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  /* 加上这行，强制开启硬件加速，杜绝渲染断层 */
-  transform: translateZ(0); 
 }
 
 .spotlight {
