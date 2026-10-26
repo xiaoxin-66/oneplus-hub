@@ -58,7 +58,7 @@ body {
 .orb-1 { width: 350px; height: 350px; background: #2f6bff; top: -100px; left: -100px; }
 .orb-2 { width: 350px; height: 350px; background: #8b3bff; bottom: -100px; right: -100px; }
 
-/* 主卡片（动态流光边框） */
+/* 主卡片 */
 .card {
   position: relative;
   z-index: 10;
@@ -68,13 +68,17 @@ body {
   border-radius: 22px;
   background: conic-gradient(from var(--angle),
     #2f6bff, #8b5cf6 22%, #ff4d6d 42%, #ff9d3d 58%, #2f6bff 78%, #2f6bff 100%);
-  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, .9), 0 0 40px -20px rgba(90, 120, 255, .6);
   overflow: hidden;
-  animation: spin 8s linear infinite;
+  animation: spin 8s linear infinite, glowPulse 3s infinite alternate;
   transform: translateZ(0);
   will-change: transform;
 }
+
 @keyframes spin { to { --angle: 360deg; } }
+@keyframes glowPulse {
+  0% { box-shadow: 0 20px 60px -20px rgba(0, 0, 0, .9), 0 0 25px -5px rgba(90, 120, 255, .4); }
+  100% { box-shadow: 0 20px 60px -20px rgba(0, 0, 0, .9), 0 0 50px 10px rgba(90, 120, 255, .7); }
+}
 
 .card-inner {
   position: relative;
@@ -89,8 +93,9 @@ body {
   text-align: center;
 }
 
-/* 图标 */
+/* 图标 + 呼吸灯 */
 .icon {
+  position: relative;
   width: 54px; height: 54px;
   margin: 0 auto 16px;
   border-radius: 16px;
@@ -98,7 +103,23 @@ body {
   background: rgba(59, 157, 255, 0.12);
   border: 1px solid rgba(59, 157, 255, 0.3);
   color: #3b9dff;
-  box-shadow: 0 0 20px rgba(59, 157, 255, 0.2);
+  z-index: 1;
+}
+
+.icon::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 20px;
+  background: #3b9dff;
+  filter: blur(10px);
+  z-index: -1;
+  animation: iconPulse 2s infinite alternate;
+}
+
+@keyframes iconPulse {
+  0% { opacity: 0.2; transform: scale(0.9); }
+  100% { opacity: 0.6; transform: scale(1.1); }
 }
 
 h2 { margin-bottom: 6px; font-size: 20px; font-weight: 800; letter-spacing: 1px; color: #fff; }
