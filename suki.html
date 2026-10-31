@@ -4,162 +4,81 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SukiSU 验证 - 满天星</title>
+<link rel="stylesheet" href="common.css">
 <style>
-@property --angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: true;
-}
+/* 这里包含了 suki.html 独有的样式 */
+.card-inner { padding: 30px 20px 24px; text-align: center; }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --angle: 0deg;
-  --text: #eef2ff;
-  --muted: rgba(214, 226, 255, .46);
-}
-
-html, body { height: 100%; }
-
-body {
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  align-items: safe center;
-  justify-content: safe center;
-  padding: 15px 12px;
-  font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
-  color: var(--text);
-  background: #04060a;
-  background-image: radial-gradient(circle at 50% 0%, #0d1425 0%, #04060a 100%);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  user-select: none;
-}
-
-/* 闪烁星空背景 */
-.stars {
-  position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background-image: 
-    radial-gradient(1.5px 1.5px at 20px 30px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1.5px 1.5px at 160px 120px, #fff, rgba(0,0,0,0));
-  background-repeat: repeat;
-  background-size: 200px 150px;
-  animation: twinkle 4s infinite alternate;
-}
-@keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-.orb {
-  position: fixed; z-index: 1; border-radius: 50%;
-  filter: blur(100px); pointer-events: none; opacity: .15;
-}
-.orb-1 { width: 350px; height: 350px; background: #2f6bff; top: -100px; left: -100px; }
-.orb-2 { width: 350px; height: 350px; background: #8b3bff; bottom: -100px; right: -100px; }
-
-/* 主卡片 */
-.card {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  max-width: 360px;
-  padding: 2.5px;
-  border-radius: 22px;
-  background: conic-gradient(from var(--angle),
-    #2f6bff, #8b5cf6 22%, #ff4d6d 42%, #ff9d3d 58%, #2f6bff 78%, #2f6bff 100%);
-  overflow: hidden;
-  animation: spin 8s linear infinite, glowPulse 3s infinite alternate;
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-@keyframes spin { to { --angle: 360deg; } }
-@keyframes glowPulse {
-  0% { box-shadow: 0 20px 60px -20px rgba(0, 0, 0, .9), 0 0 25px -5px rgba(90, 120, 255, .4); }
-  100% { box-shadow: 0 20px 60px -20px rgba(0, 0, 0, .9), 0 0 50px 10px rgba(90, 120, 255, .7); }
-}
-
-.card-inner {
-  position: relative;
-  isolation: isolate;
-  padding: 30px 20px 24px;
-  border-radius: 19.5px;
-  overflow: hidden;
-  background: rgba(13, 18, 30, 0.92); 
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transform: translateZ(0);
-  text-align: center;
-}
-
-/* 图标 + 呼吸灯 */
 .icon {
   position: relative;
   width: 54px; height: 54px;
   margin: 0 auto 16px;
   border-radius: 16px;
   display: grid; place-items: center;
-  background: rgba(59, 157, 255, 0.12);
-  border: 1px solid rgba(59, 157, 255, 0.3);
+  background: rgba(59,157,255,.12);
+  border: 1px solid rgba(59,157,255,.3);
   color: #3b9dff;
   z-index: 1;
 }
-
 .icon::before {
   content: '';
-  position: absolute;
-  inset: -4px;
+  position: absolute; inset: -4px;
   border-radius: 20px;
   background: #3b9dff;
   filter: blur(10px);
   z-index: -1;
   animation: iconPulse 2s infinite alternate;
 }
-
 @keyframes iconPulse {
-  0% { opacity: 0.2; transform: scale(0.9); }
-  100% { opacity: 0.6; transform: scale(1.1); }
+  0% { opacity: .2; transform: scale(.9); }
+  100% { opacity: .6; transform: scale(1.1); }
 }
 
 h2 { margin-bottom: 6px; font-size: 20px; font-weight: 800; letter-spacing: 1px; color: #fff; }
 p { margin-bottom: 20px; font-size: 12px; color: var(--muted); line-height: 1.5; }
 
-/* 输入框 */
-.input-group { margin-bottom: 6px; }
+.input-group { position: relative; margin-bottom: 6px; }
 input {
   width: 100%;
-  padding: 12px;
+  padding: 12px 44px 12px 12px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0,0,0,.4);
+  border: 1px solid rgba(255,255,255,.1);
   color: #fff;
   font-size: 15px;
   text-align: center;
   outline: none;
-  transition: all 0.3s;
+  transition: border-color .3s, box-shadow .3s;
   font-family: inherit;
   letter-spacing: 2px;
 }
-input::placeholder { letter-spacing: normal; color: rgba(255, 255, 255, 0.3); }
-input:focus { border-color: #3b9dff; box-shadow: 0 0 15px rgba(59, 157, 255, 0.3); }
+input::placeholder { letter-spacing: normal; color: rgba(255,255,255,.3); }
+input:focus { border-color: #3b9dff; box-shadow: 0 0 15px rgba(59,157,255,.3); }
 
-/* 错误提示 */
+.eye {
+  position: absolute;
+  right: 8px; top: 50%;
+  transform: translateY(-50%);
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,.4);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: color .2s, background .2s;
+}
+.eye:hover { color: #fff; background: rgba(255,255,255,.08); }
+.eye svg { width: 16px; height: 16px; }
+
 .err {
   color: #ff4d4d; font-size: 11.5px;
   height: 18px; margin-bottom: 12px;
-  opacity: 0; transition: opacity 0.3s;
+  opacity: 0; transition: opacity .3s;
 }
 .err.show { opacity: 1; }
-.shake { animation: shake 0.4s ease-in-out; }
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
 
-/* 按钮 */
-button {
+button.verify {
   width: 100%;
   padding: 13px;
   border-radius: 12px;
@@ -169,27 +88,26 @@ button {
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 6px 15px rgba(59, 157, 255, 0.3);
+  transition: transform .3s, box-shadow .3s;
+  box-shadow: 0 6px 15px rgba(59,157,255,.3);
   margin-bottom: 20px;
 }
-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59, 157, 255, 0.5); }
-button:disabled { background: #2a3245; color: rgba(255, 255, 255, 0.3); box-shadow: none; cursor: not-allowed; }
+button.verify:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,157,255,.5); }
+button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); box-shadow: none; cursor: not-allowed; }
 
-/* 返回首页 */
 .back-btn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: rgba(214, 226, 255, 0.5);
+  color: rgba(214,226,255,.5);
   text-decoration: none;
   font-size: 12px;
   padding: 6px 12px;
   border-radius: 100px;
-  background: rgba(255, 255, 255, 0.04);
-  transition: all 0.3s;
+  background: rgba(255,255,255,.04);
+  transition: color .3s, background .3s;
 }
-.back-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+.back-btn:hover { color: #fff; background: rgba(255,255,255,.1); }
 </style>
 </head>
 <body>
@@ -208,14 +126,20 @@ button:disabled { background: #2a3245; color: rgba(255, 255, 255, 0.3); box-shad
     </div>
     <h2>SukiSU 验证</h2>
     <p>该资源为付费内容<br>请输入您购买后获取的密钥</p>
-    
+
     <div class="input-group">
-      <input type="password" id="pass" placeholder="请输入密钥" autocomplete="off">
+      <input type="password" id="pass" placeholder="请输入密钥" autocomplete="off" aria-describedby="err">
+      <button type="button" class="eye" id="eyeBtn" aria-label="显示或隐藏密钥">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </button>
     </div>
-    <div class="err" id="err"></div>
-    
-    <button id="verifyBtn" onclick="verify()">验证并前往下载</button>
-    
+    <div class="err" id="err" role="alert"></div>
+
+    <button class="verify" id="verifyBtn" onclick="verify()">验证并前往下载</button>
+
     <a href="index.html" class="back-btn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
       返回首页
@@ -223,106 +147,122 @@ button:disabled { background: #2a3245; color: rgba(255, 255, 255, 0.3); box-shad
   </div>
 </main>
 
+<script src="common.js"></script>
 <script>
-  const MAX_TRIES = 5;
-  const LOCK_TIME = 10 * 60 * 1000;
-  const passInput = document.getElementById('pass');
-  const verifyBtn = document.getElementById('verifyBtn');
-  const errText = document.getElementById('err');
-  const card = document.getElementById('card');
-  let timerInterval = null;
+/* ===== 已填入你生成的加密常量 ===== */
+const KEY_HASH   = "9c782df6bb1e8a69d4b9eb634b0a4c5b9d90c94bc9e6d5937c453bdc10f94911";
+const SALT_B64   = "iqGAeOq8QGU+C7Rq4rGDRQ==";
+const IV_B64     = "0Q2eZRMpwpICKHlY";
+const CIPHER_B64 = "xdkOAYpA5rQjpd8+2TW9MkuADp0L3NSXFMSeRGwzYXVAi5+rELrt5JDD70/2rJ2CT7FlEzA=";
+/* ======================================= */
 
-  window.onload = function() { checkLockStatus(); };
+const MAX_TRIES = 5;
+const LOCK_TIME = 10 * 60 * 1000;
+const passInput = document.getElementById('pass');
+const verifyBtn = document.getElementById('verifyBtn');
+const errText = document.getElementById('err');
+const card = document.getElementById('card');
+const eyeBtn = document.getElementById('eyeBtn');
+let timerInterval = null;
 
-  function verify() {
-    const val = passInput.value.trim();
-    if(!val) return;
-    const enc = val.split('').map(c => String.fromCharCode(c.charCodeAt(0) + 2)).join('');
-    
-    if (enc === "J9274:") {
-      localStorage.removeItem('suki_fail_count');
-      localStorage.removeItem('suki_lock_until');
-      window.location.href = "https://www.123684.com/s/YXhyVv-kcWsH";
-    } else {
-      handleFail();
-    }
+window.addEventListener('load', checkLockStatus);
+
+eyeBtn.addEventListener('click', () => {
+  passInput.type = passInput.type === 'password' ? 'text' : 'password';
+  passInput.focus();
+});
+
+const b64ToU8 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const u8ToHex = u8 => [...u8].map(b => b.toString(16).padStart(2, '0')).join('');
+
+async function verify() {
+  const val = passInput.value.trim();
+  if (!val) return;
+  verifyBtn.disabled = true;
+
+  try {
+    const enc = new TextEncoder();
+    const digest = await crypto.subtle.digest('SHA-256', enc.encode(val));
+    if (u8ToHex(new Uint8Array(digest)) !== KEY_HASH) { handleFail(); return; }
+
+    const baseKey = await crypto.subtle.importKey('raw', enc.encode(val), 'PBKDF2', false, ['deriveKey']);
+    const aesKey = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: b64ToU8(SALT_B64), iterations: 100000, hash: 'SHA-256' },
+      baseKey, { name: 'AES-GCM', length: 256 }, false, ['decrypt']
+    );
+    const pt = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: b64ToU8(IV_B64) },
+      aesKey, b64ToU8(CIPHER_B64)
+    );
+    const url = new TextDecoder().decode(pt);
+
+    localStorage.removeItem('suki_fail_count');
+    localStorage.removeItem('suki_lock_until');
+    window.location.replace(url);
+  } catch (e) {
+    handleFail();
+  } finally {
+    verifyBtn.disabled = false;
   }
+}
 
-  function handleFail() {
-    let failCount = parseInt(localStorage.getItem('suki_fail_count') || '0');
-    failCount++;
-    localStorage.setItem('suki_fail_count', failCount);
-    const remain = MAX_TRIES - failCount;
+function handleFail() {
+  let failCount = parseInt(localStorage.getItem('suki_fail_count') || '0') + 1;
+  localStorage.setItem('suki_fail_count', failCount);
+  const remain = MAX_TRIES - failCount;
 
-    card.classList.add('shake');
-    setTimeout(() => { card.classList.remove('shake'); }, 400);
+  card.classList.add('shake');
+  setTimeout(() => card.classList.remove('shake'), 400);
 
-    if (failCount >= MAX_TRIES) {
-      const lockUntil = Date.now() + LOCK_TIME;
-      localStorage.setItem('suki_lock_until', lockUntil);
-      checkLockStatus();
-    } else {
-      showError(`密钥错误，您还有 ${remain} 次尝试机会`);
-      passInput.value = '';
-      passInput.focus();
-    }
+  if (failCount >= MAX_TRIES) {
+    localStorage.setItem('suki_lock_until', Date.now() + LOCK_TIME);
+    checkLockStatus();
+  } else {
+    showError(`密钥错误，您还有 ${remain} 次尝试机会`);
+    passInput.value = '';
+    passInput.focus();
   }
+}
 
-  function showError(msg) {
-    errText.innerText = msg;
-    errText.classList.add('show');
-  }
+function showError(msg) { errText.innerText = msg; errText.classList.add('show'); }
 
-  function checkLockStatus() {
-    const lockUntil = localStorage.getItem('suki_lock_until');
-    if (lockUntil && Date.now() < lockUntil) {
-      passInput.disabled = true;
-      verifyBtn.disabled = true;
-      if (timerInterval) clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        const now = Date.now();
-        const left = lockUntil - now;
-        if (left <= 0) {
-          clearInterval(timerInterval);
-          localStorage.removeItem('suki_fail_count');
-          localStorage.removeItem('suki_lock_until');
-          unlockInputs();
-        } else {
-          const m = Math.floor(left / 60000);
-          const s = Math.floor((left % 60000) / 1000);
-          showError(`错误次数过多，请 ${m}分${s < 10 ? '0'+s : s}秒 后重试`);
-        }
-      }, 1000);
-    } else {
-      if (lockUntil) {
+function checkLockStatus() {
+  const lockUntil = localStorage.getItem('suki_lock_until');
+  if (lockUntil && Date.now() < lockUntil) {
+    passInput.disabled = true;
+    verifyBtn.disabled = true;
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      const left = lockUntil - Date.now();
+      if (left <= 0) {
+        clearInterval(timerInterval);
         localStorage.removeItem('suki_fail_count');
         localStorage.removeItem('suki_lock_until');
+        unlockInputs();
+      } else {
+        const m = Math.floor(left / 60000);
+        const s = Math.floor((left % 60000) / 1000);
+        showError(`错误次数过多，请 ${m}分${s < 10 ? '0'+s : s}秒 后重试`);
       }
-      unlockInputs();
+    }, 1000);
+  } else {
+    if (lockUntil) {
+      localStorage.removeItem('suki_fail_count');
+      localStorage.removeItem('suki_lock_until');
     }
+    unlockInputs();
   }
+}
 
-  function unlockInputs() {
-    passInput.disabled = false;
-    verifyBtn.disabled = false;
-    errText.classList.remove('show');
-    passInput.value = '';
-  }
+function unlockInputs() {
+  passInput.disabled = false;
+  verifyBtn.disabled = false;
+  errText.classList.remove('show');
+  passInput.value = '';
+}
 
-  passInput.addEventListener('input', () => { errText.classList.remove('show'); });
-  passInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !verifyBtn.disabled) verify(); });
-
-  // 防审查元素
-  (function() {
-    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
-      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'C' || e.key === 'c' || e.key === 'J' || e.key === 'j')) {
-        e.preventDefault(); return false;
-      }
-      if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); return false; }
-    });
-  })();
+passInput.addEventListener('input', () => errText.classList.remove('show'));
+passInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !verifyBtn.disabled) verify(); });
 </script>
 </body>
 </html>
