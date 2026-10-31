@@ -1,15 +1,8 @@
-@property --angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: true;
-}
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --angle: 0deg;
   --text: #eef2ff;
-  --muted: rgba(214, 226, 255, .6);
+  --muted: rgba(214, 226, 255, .7);
 }
 
 html, body { height: 100%; }
@@ -24,13 +17,29 @@ body {
   font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
   color: var(--text);
   background: #04060a;
-  background-image: radial-gradient(circle at 50% 0%, #0d1425 0%, #04060a 100%);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   user-select: none;
 }
 
-/* ================= 背景特效层 ================= */
+/* ================= 1. 星云与星空 ================= */
+.nebula {
+  position: fixed; top: -10%; left: -10%;
+  width: 120vw; height: 120vh;
+  background: 
+    radial-gradient(ellipse 40% 60% at 30% 50%, rgba(180, 80, 60, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 70% 40%, rgba(80, 60, 180, 0.15) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 55% at 20% 80%, rgba(60, 100, 200, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, rgba(10, 15, 40, 1) 0%, #04060a 100%);
+  filter: blur(50px) saturate(150%);
+  z-index: 0; pointer-events: none;
+  animation: nebulaPulse 20s ease-in-out infinite alternate;
+}
+@keyframes nebulaPulse {
+  0% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+  100% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+}
+
 .stars {
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
   background-image: 
@@ -44,120 +53,61 @@ body {
 }
 @keyframes twinkle { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
 
-/* 旋转星球 */
+/* ================= 2. 蓝色星球 ================= */
 .planet {
-  position: fixed;
-  top: 15%; right: -80px;
+  position: fixed; top: 15%; right: -80px;
   width: 250px; height: 250px;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #5c8dff, #1a2a6c, #04060a);
-  box-shadow: inset -20px -20px 40px rgba(0,0,0,0.8), 0 0 40px rgba(92,141,255,0.2);
-  z-index: 0;
-  pointer-events: none;
-  animation: planetSpin 60s linear infinite;
+  box-shadow: inset -20px -20px 40px rgba(0,0,0,0.8);
+  z-index: 1; pointer-events: none;
 }
+
 .planet::after {
   content: '';
-  position: absolute;
-  inset: -30px;
+  position: absolute; inset: -30px;
   border-radius: 50%;
   border: 1px solid rgba(92, 141, 255, 0.2);
   border-bottom-color: rgba(92, 141, 255, 0.6);
   transform: rotate(-20deg);
   animation: ringSpin 20s linear infinite;
 }
-@keyframes planetSpin { to { transform: rotate(360deg); } }
 @keyframes ringSpin { to { transform: rotate(340deg); } }
 
+/* ================= 3. 光晕 ================= */
 .orb { position: fixed; z-index: 1; border-radius: 50%; filter: blur(100px); pointer-events: none; opacity: .15; }
 .orb-1 { width: 350px; height: 350px; background: #2f6bff; bottom: -100px; left: -100px; }
 .orb-2 { width: 350px; height: 350px; background: #8b3bff; top: -100px; left: 20%; }
 
-/* ================= 流星特效 ================= */
+/* ================= 4. 流星 ================= */
 .meteor {
-  position: fixed;
-  width: 220px; /* 从 150px 加长到 220px */
-  height: 2.5px; /* 从 1.5px 加粗到 2.5px */
-  /* 渐变：头部更亮更实，尾部拖得更长 */
-  background: linear-gradient(to left, #fff 0%, rgba(255,255,255,0.9) 15%, rgba(255,255,255,0) 100%);
-  border-radius: 50%;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0;
-  transform-origin: right center;
-  transform: rotate(45deg);
+  position: fixed; width: 350px; height: 2px;
+  background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 5%, rgba(255,255,255,0) 100%);
+  border-radius: 50%; z-index: 5; pointer-events: none; opacity: 0;
+  transform-origin: right center; transform: rotate(45deg);
 }
-
-/* 头部光点加大 */
 .meteor::after {
-  content: '';
-  position: absolute;
-  right: -1.5px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px; /* 头部光点从 3px 加粗到 4px */
-  height: 4px;
-  background: #fff;
-  border-radius: 50%;
-  /* 发光范围加大 */
-  box-shadow: 0 0 15px 3px rgba(255, 255, 255, 1);
+  content: ''; position: absolute; right: -2px; top: 50%;
+  transform: translateY(-50%); width: 4px; height: 4px;
+  background: #fff; border-radius: 50%;
+  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 15px 4px rgba(150, 200, 255, 0.4);
 }
-
 @keyframes meteorFall {
   0% { transform: translate(0, 0) rotate(135deg); opacity: 0; }
-  15% { opacity: 1; }
-  85% { opacity: 0.8; }
-  100% { transform: translate(-600px, 600px) rotate(135deg); opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translate(-800px, 800px) rotate(135deg); opacity: 0; } 
 }
 
-/* ================= 卡片（极度透明液态玻璃） ================= */
+/* ================= 5. 卡片（纯透明） ================= */
 .card {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  max-width: 360px;
-  padding: 1.5px;
-  border-radius: 24px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.15) 100%);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255,255,255,0.05);
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-.card-inner {
-  position: relative;
-  isolation: isolate;
-  border-radius: 22.5px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.03); 
-  backdrop-filter: blur(30px) saturate(150%);
-  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  position: relative; z-index: 10; width: 100%; max-width: 340px;
+  padding: 1px; border-radius: 26px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(90, 120, 255, 0.2);
   transform: translateZ(0);
 }
-
-.card-inner::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 50%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-.card-inner::after {
-  content: '';
-  position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle at 50% 0%, rgba(120, 160, 255, 0.1), transparent 60%);
-  pointer-events: none;
-  z-index: -1;
-}
-
+.card-inner { position: relative; border-radius: 25px; overflow: hidden; background: transparent; }
 .shake { animation: shake .4s ease-in-out; }
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
