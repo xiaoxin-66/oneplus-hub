@@ -60,33 +60,16 @@ h1 { margin-bottom: 6px; font-size: 20px; font-weight: 900; letter-spacing: 1px;
   border-radius: 5px; font-size: 9px; font-weight: 700; color: #00e5ff; 
   background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); 
   flex-shrink: 0; overflow: hidden;
-  /* 强制硬件加速，解决卡顿 */
-  will-change: transform;
-  transform: translateZ(0);
+  will-change: transform; transform: translateZ(0);
   animation: floatBadge 2.5s ease-in-out infinite;
   box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
 }
-.update-badge::before { 
-  content: ''; position: absolute; inset: -10px; 
-  background: radial-gradient(circle, rgba(0,229,255,0.4) 0%, transparent 70%); 
-  z-index: -1; opacity: 0.5; 
-}
-.update-badge::after { 
-  content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; 
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); 
-  transform: skewX(-20deg); animation: badgeShine 3s cubic-bezier(0.25, 1, 0.5, 1) infinite; 
-}
+.update-badge::before { content: ''; position: absolute; inset: -10px; background: radial-gradient(circle, rgba(0,229,255,0.4) 0%, transparent 70%); z-index: -1; opacity: 0.5; }
+.update-badge::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transform: skewX(-20deg); animation: badgeShine 3s cubic-bezier(0.25, 1, 0.5, 1) infinite; }
 .update-dot { width: 3px; height: 3px; border-radius: 50%; background: #00e5ff; box-shadow: 0 0 5px #00e5ff; }
 
-@keyframes floatBadge { 
-  0%, 100% { transform: translateY(0); } 
-  50% { transform: translateY(-3px); } 
-}
-@keyframes badgeShine { 
-  0% { left: -100%; } 
-  30% { left: 200%; } 
-  100% { left: 200%; } 
-}
+@keyframes floatBadge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes badgeShine { 0% { left: -100%; } 30% { left: 200%; } 100% { left: 200%; } }
 
 .arrow { width: 14px; height: 14px; display: grid; place-items: center; color: rgba(255,255,255,.2); transition: transform .2s; flex-shrink: 0; margin-left: 4px; }
 .btn:hover .arrow { transform: translateX(2px); color: rgba(255,255,255,.6); }
@@ -105,6 +88,13 @@ h1 { margin-bottom: 6px; font-size: 20px; font-weight: 900; letter-spacing: 1px;
 </style>
 </head>
 <body>
+
+<!-- 老老实实把背景写在这里，永远不消失 -->
+<div class="nebula" aria-hidden="true"></div>
+<div class="stars" aria-hidden="true"></div>
+<div class="planet" aria-hidden="true" id="planet-bg"></div>
+<div class="orb orb-1" aria-hidden="true"></div>
+<div class="orb orb-2" aria-hidden="true"></div>
 
 <main class="card">
   <div class="card-inner">
