@@ -1,11 +1,16 @@
+/* ================= 全局防白屏与深色背景 ================= */
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  background-color: #04060a; /* 彻底杜绝跳转白屏 */
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   --text: #eef2ff;
   --muted: rgba(214, 226, 255, .7);
 }
-
-html, body { height: 100%; }
 
 body {
   min-height: 100dvh;
@@ -16,15 +21,16 @@ body {
   padding: 15px 12px;
   font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
   color: var(--text);
-  background: #04060a;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ================= 1. 星云与星空 ================= */
 .nebula {
-  position: fixed; top: -10%; left: -10%;
+  position: fixed;
+  top: -10%; left: -10%;
   width: 120vw; height: 120vh;
   background: 
     radial-gradient(ellipse 40% 60% at 30% 50%, rgba(180, 80, 60, 0.15) 0%, transparent 60%),
@@ -32,7 +38,8 @@ body {
     radial-gradient(ellipse 45% 55% at 20% 80%, rgba(60, 100, 200, 0.15) 0%, transparent 60%),
     radial-gradient(ellipse 100% 100% at 50% 50%, rgba(10, 15, 40, 1) 0%, #04060a 100%);
   filter: blur(50px) saturate(150%);
-  z-index: 0; pointer-events: none;
+  z-index: 0;
+  pointer-events: none;
   animation: nebulaPulse 20s ease-in-out infinite alternate;
 }
 @keyframes nebulaPulse {
@@ -55,17 +62,20 @@ body {
 
 /* ================= 2. 蓝色星球 ================= */
 .planet {
-  position: fixed; top: 15%; right: -80px;
+  position: fixed;
+  top: 15%; right: -80px;
   width: 250px; height: 250px;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #5c8dff, #1a2a6c, #04060a);
   box-shadow: inset -20px -20px 40px rgba(0,0,0,0.8);
-  z-index: 1; pointer-events: none;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .planet::after {
   content: '';
-  position: absolute; inset: -30px;
+  position: absolute;
+  inset: -30px;
   border-radius: 50%;
   border: 1px solid rgba(92, 141, 255, 0.2);
   border-bottom-color: rgba(92, 141, 255, 0.6);
@@ -81,15 +91,27 @@ body {
 
 /* ================= 4. 流星 ================= */
 .meteor {
-  position: fixed; width: 350px; height: 2px;
+  position: fixed;
+  width: 350px; 
+  height: 2px;
   background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 5%, rgba(255,255,255,0) 100%);
-  border-radius: 50%; z-index: 5; pointer-events: none; opacity: 0;
-  transform-origin: right center; transform: rotate(45deg);
+  border-radius: 50%;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transform-origin: right center;
+  transform: rotate(45deg);
 }
 .meteor::after {
-  content: ''; position: absolute; right: -2px; top: 50%;
-  transform: translateY(-50%); width: 4px; height: 4px;
-  background: #fff; border-radius: 50%;
+  content: '';
+  position: absolute;
+  right: -2px; 
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px; 
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
   box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 15px 4px rgba(150, 200, 255, 0.4);
 }
 @keyframes meteorFall {
@@ -99,15 +121,44 @@ body {
   100% { transform: translate(-800px, 800px) rotate(135deg); opacity: 0; } 
 }
 
-/* ================= 5. 卡片（纯透明） ================= */
+/* ================= 5. 卡片（深邃纯透玻璃） ================= */
 .card {
-  position: relative; z-index: 10; width: 100%; max-width: 340px;
-  padding: 1px; border-radius: 26px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(90, 120, 255, 0.2);
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 340px;
+  padding: 1px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(255, 255, 255, 0.05) 100%);
+  box-shadow: 
+    0 20px 50px -12px rgba(0, 0, 0, 0.8), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.card-inner {
+  position: relative;
+  isolation: isolate;
+  border-radius: 25px;
+  overflow: hidden;
+  background: rgba(5, 10, 20, 0.3); 
   transform: translateZ(0);
 }
-.card-inner { position: relative; border-radius: 25px; overflow: hidden; background: transparent; }
+
+.card-inner::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 50% 10%, rgba(90, 120, 255, 0.03), transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
 .shake { animation: shake .4s ease-in-out; }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}

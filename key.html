@@ -2,7 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="public">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>获取密钥 - 满天星</title>
 <link rel="stylesheet" href="common.css">
@@ -34,7 +35,6 @@ p { margin-bottom: 24px; font-size: 13px; color: rgba(255,255,255,0.6); text-sha
 </head>
 <body>
 
-<!-- 背景元素恢复 -->
 <div class="nebula" aria-hidden="true"></div>
 <div class="stars" aria-hidden="true"></div>
 <div class="planet" aria-hidden="true" id="planet-bg"></div>
@@ -89,9 +89,10 @@ p { margin-bottom: 24px; font-size: 13px; color: rgba(255,255,255,0.6); text-sha
       
       this.innerHTML = '<span class="btn-loading" style="border-top-color:#fff; margin-right:6px;"></span> 返回中...';
 
+      // 极速返回：200ms
       setTimeout(() => {
         window.location.href = 'index.html';
-      }, 400);
+      }, 200);
     });
   });
 </script>
