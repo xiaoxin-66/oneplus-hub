@@ -1,11 +1,8 @@
-/* ================= 全局防白屏与深色背景 ================= */
 html, body {
-  margin: 0; padding: 0;
-  width: 100%; height: 100%;
-  background-color: #04060a; /* 彻底杜绝跳转白屏 */
+  background-color: #04060a !important; 
+  margin: 0; padding: 0; width: 100%; height: 100%;
 }
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; }
 
 :root {
   --text: #eef2ff;
@@ -27,138 +24,72 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ================= 1. 星云与星空 ================= */
 .nebula {
-  position: fixed;
-  top: -10%; left: -10%;
+  position: fixed; top: -10%; left: -10%;
   width: 120vw; height: 120vh;
-  background: 
-    radial-gradient(ellipse 40% 60% at 30% 50%, rgba(180, 80, 60, 0.15) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 70% at 70% 40%, rgba(80, 60, 180, 0.15) 0%, transparent 65%),
-    radial-gradient(ellipse 45% 55% at 20% 80%, rgba(60, 100, 200, 0.15) 0%, transparent 60%),
-    radial-gradient(ellipse 100% 100% at 50% 50%, rgba(10, 15, 40, 1) 0%, #04060a 100%);
+  background: radial-gradient(ellipse 40% 60% at 30% 50%, rgba(180, 80, 60, 0.15) 0%, transparent 60%),
+              radial-gradient(ellipse 50% 70% at 70% 40%, rgba(80, 60, 180, 0.15) 0%, transparent 65%),
+              radial-gradient(ellipse 100% 100% at 50% 50%, rgba(10, 15, 40, 1) 0%, #04060a 100%);
   filter: blur(50px) saturate(150%);
-  z-index: 0;
-  pointer-events: none;
+  z-index: 0; pointer-events: none;
   animation: nebulaPulse 20s ease-in-out infinite alternate;
 }
-@keyframes nebulaPulse {
-  0% { transform: scale(1) rotate(0deg); opacity: 0.8; }
-  100% { transform: scale(1.05) rotate(2deg); opacity: 1; }
-}
+@keyframes nebulaPulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.05); opacity: 1; } }
 
 .stars {
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background-image: 
-    radial-gradient(1.5px 1.5px at 20px 30px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1.5px 1.5px at 160px 120px, #fff, rgba(0,0,0,0));
-  background-repeat: repeat;
+  background-image: radial-gradient(1.5px 1.5px at 20px 30px, #fff, transparent),
+                    radial-gradient(1px 1px at 40px 70px, #fff, transparent),
+                    radial-gradient(2px 2px at 90px 40px, #fff, transparent);
   background-size: 200px 150px;
   animation: twinkle 4s infinite alternate;
 }
 @keyframes twinkle { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
 
-/* ================= 2. 蓝色星球 ================= */
 .planet {
-  position: fixed;
-  top: 15%; right: -80px;
-  width: 250px; height: 250px;
-  border-radius: 50%;
+  position: fixed; top: 15%; right: -80px;
+  width: 250px; height: 250px; border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #5c8dff, #1a2a6c, #04060a);
   box-shadow: inset -20px -20px 40px rgba(0,0,0,0.8);
-  z-index: 1;
-  pointer-events: none;
+  z-index: 1; pointer-events: none;
 }
-
 .planet::after {
-  content: '';
-  position: absolute;
-  inset: -30px;
-  border-radius: 50%;
-  border: 1px solid rgba(92, 141, 255, 0.2);
-  border-bottom-color: rgba(92, 141, 255, 0.6);
-  transform: rotate(-20deg);
-  animation: ringSpin 20s linear infinite;
+  content: ''; position: absolute; inset: -30px; border-radius: 50%;
+  border: 1px solid rgba(92, 141, 255, 0.2); border-bottom-color: rgba(92, 141, 255, 0.6);
+  transform: rotate(-20deg); animation: ringSpin 20s linear infinite;
 }
 @keyframes ringSpin { to { transform: rotate(340deg); } }
 
-/* ================= 3. 光晕 ================= */
-.orb { position: fixed; z-index: 1; border-radius: 50%; filter: blur(100px); pointer-events: none; opacity: .15; }
+.orb { position: fixed; z-index: 1; border-radius: 50%; filter: blur(100px); opacity: .15; pointer-events: none; }
 .orb-1 { width: 350px; height: 350px; background: #2f6bff; bottom: -100px; left: -100px; }
 .orb-2 { width: 350px; height: 350px; background: #8b3bff; top: -100px; left: 20%; }
 
-/* ================= 4. 流星 ================= */
 .meteor {
-  position: fixed;
-  width: 350px; 
-  height: 2px;
-  background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 5%, rgba(255,255,255,0) 100%);
-  border-radius: 50%;
-  z-index: 5;
-  pointer-events: none;
-  opacity: 0;
-  transform-origin: right center;
-  transform: rotate(45deg);
+  position: fixed; width: 350px; height: 2px;
+  background: linear-gradient(to left, #fff 0%, rgba(255,255,255,0) 100%);
+  border-radius: 50%; z-index: 5; pointer-events: none;
+  transform-origin: right center; transform: rotate(45deg);
 }
 .meteor::after {
-  content: '';
-  position: absolute;
-  right: -2px; 
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px; 
-  height: 4px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 15px 4px rgba(150, 200, 255, 0.4);
+  content: ''; position: absolute; right: -2px; top: 50%; transform: translateY(-50%);
+  width: 4px; height: 4px; background: #fff; border-radius: 50%;
+  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9);
 }
 @keyframes meteorFall {
   0% { transform: translate(0, 0) rotate(135deg); opacity: 0; }
-  10% { opacity: 1; }
-  80% { opacity: 1; }
+  10% { opacity: 1; } 80% { opacity: 1; }
   100% { transform: translate(-800px, 800px) rotate(135deg); opacity: 0; } 
 }
 
-/* ================= 5. 卡片（深邃纯透玻璃） ================= */
 .card {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  max-width: 340px;
-  padding: 1px;
-  border-radius: 26px;
+  position: relative; z-index: 10; width: 100%; max-width: 340px; padding: 1px; border-radius: 26px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(255, 255, 255, 0.05) 100%);
-  box-shadow: 
-    0 20px 50px -12px rgba(0, 0, 0, 0.8), 
-    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.05);
   transform: translateZ(0);
-  will-change: transform;
 }
-
 .card-inner {
-  position: relative;
-  isolation: isolate;
-  border-radius: 25px;
-  overflow: hidden;
-  background: rgba(5, 10, 20, 0.3); 
-  transform: translateZ(0);
+  position: relative; border-radius: 25px; overflow: hidden;
+  background: rgba(5, 10, 20, 0.3); transform: translateZ(0);
 }
-
-.card-inner::after {
-  content: '';
-  position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle at 50% 10%, rgba(90, 120, 255, 0.03), transparent 50%);
-  pointer-events: none;
-  z-index: -1;
-}
-
 .shake { animation: shake .4s ease-in-out; }
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  75% { transform: translateX(6px); }
-}
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
