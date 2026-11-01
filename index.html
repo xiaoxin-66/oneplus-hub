@@ -8,16 +8,7 @@
 <style>
 body { overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
-/* 卡片基础样式：改为自适应高度，过度极其平滑 */
-.card-inner { 
-  padding: 20px 16px 18px; 
-  position: relative; 
-  display: flex; 
-  flex-direction: column; 
-  transition: height 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-/* === 视图容器 === */
+.card-inner { padding: 20px 16px 18px; position: relative; display: flex; flex-direction: column; transition: height 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
 .view-container { width: 100%; flex: 1; display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
@@ -232,20 +223,17 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
     viewSuki.style.display = 'none';
     viewKey.style.display = 'none';
 
-    // 核心修复：回到列表时，强制把箭头恢复原状
-    if (type === 'list') {
-      viewList.style.display = 'flex';
-      sukiArrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>';
-    }
+    // 强制把箭头恢复原状
+    sukiArrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>';
+
+    if (type === 'list') viewList.style.display = 'flex';
     if (type === 'suki') viewSuki.style.display = 'flex';
     if (type === 'key') viewKey.style.display = 'flex';
   }
 
-  // 终极防回弹修复：处理浏览器“往返缓存”恢复时的状态重置
+  // 核心防闪/防卡死：只要页面显示，强制重绘并重置UI
   window.addEventListener('pageshow', function(event) {
-    if (event.persisted || (typeof performance !== 'undefined' && performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
-      showView('list'); // 强制切回列表，消灭残留状态
-    }
+    showView('list');
   });
 
   const KEY_HASH   = "380423258a33c2c583868f680484ac9741846f583a2730882f0ba379efd84c5b";
@@ -272,7 +260,9 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
           aesKey, b64ToU8(CIPHER_B64)
         );
         const url = new TextDecoder().decode(pt);
-        window.location.href = url;
+        
+        // 核心：强制不保留历史记录跳转，回来时页面是全新的！
+        window.location.replace(url);
         return;
       } catch (e) {
         localStorage.removeItem('suki_saved_key');
@@ -311,14 +301,14 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
 
   const u8ToHex = u8 => [...u8].map(b => b.toString(16).padStart(2, '0')).join('');
 
-  verifyBtn.addEventListener('click',async () => {
+  verifyBtn.addEventListener('click', async () => {
     if (verifyBtn.disabled || isVerifying) return;
     const val = passInput.value.trim();
     if (!val) return;
 
     isVerifying = true;
     verifyBtn.disabled = true;
-    const originalText = verifyBtn.innerHTML;
+    constoriginalText = verifyBtn.innerHTML;
     verifyBtn.innerHTML = '<span class="btn-loading"></span> 验证中...';
     errText.classList.remove('show');
 
@@ -357,7 +347,8 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
       sukiTag.innerHTML = '已解锁';
 
       verifyBtn.innerHTML = '<span class="btn-loading"></span> 跳转中...';
-      setTimeout(() => { window.location.href = url; }, 300);
+      // 同样使用 replace，确保跳走后不保留缓存
+      setTimeout(() => { window.location.replace(url); }, 300);
 
     } catch (e) {
       verifyBtn.innerHTML = originalText;
