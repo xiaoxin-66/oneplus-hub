@@ -133,7 +133,7 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
             <span class="row-2"><span class="update-badge"><span class="update-dot"></span>有更新 · 10月31日</span></span>
             <span class="row-3">购买后获取</span>
           </span>
-          <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <span class="arrow" id="sukiArrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
         </a>
         <a class="btn btn-baka" href="https://1816791544.share.123pan.cn/123pan/YXhyVv-ru7KH" target="_blank">
           <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span>
@@ -230,13 +230,18 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
   const viewList = document.getElementById('viewList');
   const viewSuki = document.getElementById('viewSuki');
   const viewKey = document.getElementById('viewKey');
+  const sukiArrow = document.getElementById('sukiArrow');
 
   function showView(type) {
     viewList.style.display = 'none';
     viewSuki.style.display = 'none';
     viewKey.style.display = 'none';
 
-    if (type === 'list') viewList.style.display = 'flex';
+    // 回到列表时，强制把箭头恢复原状（解决截图里的转圈残留）
+    if (type === 'list') {
+      viewList.style.display = 'flex';
+      sukiArrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>';
+    }
     if (type === 'suki') viewSuki.style.display = 'flex';
     if (type === 'key') viewKey.style.display = 'flex';
   }
@@ -251,9 +256,7 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
   async function handleSukiClick(element) {
     const savedKey = localStorage.getItem('suki_saved_key');
     if (savedKey) {
-      const arrow = element.querySelector('.arrow');
-      const oldHtml = arrow.innerHTML;
-      arrow.innerHTML = '<span class="btn-loading"></span>';
+      sukiArrow.innerHTML = '<span class="btn-loading"></span>';
       
       try {
         const enc = new TextEncoder();
@@ -272,11 +275,11 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
       } catch (e) {
         localStorage.removeItem('suki_saved_key');
         localStorage.removeItem('suki_is_paid');
-        arrow.innerHTML = oldHtml;
+        sukiArrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>';
       }
     }
     showView('suki');
-    checkLockStatus(); // 进面板时检查一次锁定状态
+    checkLockStatus(); 
   }
 
   const MAX_TRIES = 5;
@@ -318,8 +321,7 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
     errText.classList.remove('show');
 
     try {
-      const enc = new TextEncoder();
-      const digest = await crypto.subtle.digest('SHA-256', enc.encode(val));
+      const enc = new TextEncoder();const digest = await crypto.subtle.digest('SHA-256', enc.encode(val));
       
       if (u8ToHex(new Uint8Array(digest)) !== KEY_HASH) { 
         verifyBtn.innerHTML = originalText;
