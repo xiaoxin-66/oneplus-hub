@@ -75,12 +75,7 @@ h1 { margin-bottom: 6px; font-size: 20px; font-weight: 900; letter-spacing: 1px;
 
 /* ================= 内部新界面视图 ================= */
 .view-header { display: flex; align-items: center; margin-bottom: 24px; }
-.back-icon { 
-  width: 32px; height: 32px; border-radius: 50%; 
-  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.05);
-  display: grid; place-items: center; cursor: pointer; 
-  color: #fff; margin-right: 12px; transition: all 0.2s; 
-}
+.back-icon { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.05); display: grid; place-items: center; cursor: pointer; color: #fff; margin-right: 12px; transition: all 0.2s; }
 .back-icon:active { transform: scale(0.9); background: rgba(255,255,255,0.2); }
 .view-title { font-size: 18px; font-weight: bold; color: #fff; }
 
@@ -237,7 +232,7 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
     viewSuki.style.display = 'none';
     viewKey.style.display = 'none';
 
-    // 回到列表时，强制把箭头恢复原状（解决截图里的转圈残留）
+    // 核心修复：回到列表时，强制把箭头恢复原状
     if (type === 'list') {
       viewList.style.display = 'flex';
       sukiArrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>';
@@ -245,6 +240,13 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
     if (type === 'suki') viewSuki.style.display = 'flex';
     if (type === 'key') viewKey.style.display = 'flex';
   }
+
+  // 终极防回弹修复：处理浏览器“往返缓存”恢复时的状态重置
+  window.addEventListener('pageshow', function(event) {
+    if (event.persisted || (typeof performance !== 'undefined' && performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+      showView('list'); // 强制切回列表，消灭残留状态
+    }
+  });
 
   const KEY_HASH   = "380423258a33c2c583868f680484ac9741846f583a2730882f0ba379efd84c5b";
   const SALT_B64   = "6iRrrBIgb+VAeaumRGCFoQ==";
@@ -309,7 +311,7 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
 
   const u8ToHex = u8 => [...u8].map(b => b.toString(16).padStart(2, '0')).join('');
 
-  verifyBtn.addEventListener('click', async () => {
+  verifyBtn.addEventListener('click',async () => {
     if (verifyBtn.disabled || isVerifying) return;
     const val = passInput.value.trim();
     if (!val) return;
@@ -321,7 +323,8 @@ button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); curso
     errText.classList.remove('show');
 
     try {
-      const enc = new TextEncoder();const digest = await crypto.subtle.digest('SHA-256', enc.encode(val));
+      const enc = new TextEncoder();
+      const digest = await crypto.subtle.digest('SHA-256', enc.encode(val));
       
       if (u8ToHex(new Uint8Array(digest)) !== KEY_HASH) { 
         verifyBtn.innerHTML = originalText;
