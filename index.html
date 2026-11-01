@@ -2,30 +2,46 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>满天星 - OnePlus</title>
 <link rel="stylesheet" href="common.css">
 <style>
-.card-inner { padding: 20px 16px 18px; }
+body { overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+
+/* 卡片基础样式：改为自适应高度，过度极其平滑 */
+.card-inner { 
+  padding: 20px 16px 18px; 
+  position: relative; 
+  display: flex; 
+  flex-direction: column; 
+  transition: height 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* === 视图容器 === */
+.view-container { width: 100%; flex: 1; display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+/* ================= 首页列表视图 ================= */
 .notice-bar { position: relative; z-index: 11; display: flex; align-items: center; background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: 8px 10px; margin-bottom: 16px; font-size: 11px; color: #ffca6b; overflow: hidden; }
 .notice-icon { flex-shrink: 0; margin-right: 6px; }
 .notice-content { flex: 1; overflow: hidden; }
 .notice-track { display: inline-flex; white-space: nowrap; animation: marquee 15s linear infinite; }
 .notice-track span { padding-right: 30px; }
 @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
 .head { position: relative; z-index: 11; text-align: center; margin-bottom: 18px; }
 .logo { position: relative; width: 50px; height: 50px; margin: 0 auto 10px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; font-weight: 900; color: #fff; background: linear-gradient(145deg, #ff5e5e, #ff3b30 40%, #c91414); box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 6px 15px rgba(255,59,48,0.3); z-index: 1; }
 .logo::before { content: ''; position: absolute; inset: -4px; border-radius: 18px; background: linear-gradient(145deg, #ff4d4d, #ff3b30); filter: blur(10px); z-index: -1; animation: logoPulse 2s infinite alternate; }
 @keyframes logoPulse { 0% { opacity: .2; transform: scale(.9); } 100% { opacity: .7; transform: scale(1.05); } }
-h1 { margin-bottom: 6px; font-size: 20px; font-weight: 900; letter-spacing: 1px; background: linear-gradient(100deg, #ffffff 0%, #d4e4ff 50%, #e6d4ff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; align-items: baseline; justify-content: center; gap: 6px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)) drop-shadow(0 0 10px rgba(160, 200, 255, 0.5)); }
-.brand { font-size: 12px; font-weight: 800; font-family: "Arial", sans-serif; background: linear-gradient(135deg, #ff6b6b, #ff3b30); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)) drop-shadow(0 0 8px rgba(255, 59, 48, 0.4)); }
+h1 { margin-bottom: 6px; font-size: 20px; font-weight: 900; letter-spacing: 1px; background: linear-gradient(100deg, #ffffff 0%, #d4e4ff 50%, #e6d4ff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; align-items: baseline; justify-content: center; gap: 6px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
+.brand { font-size: 12px; font-weight: 800; font-family: "Arial", sans-serif; background: linear-gradient(135deg, #ff6b6b, #ff3b30); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .meta-group { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 16px; }
 .meta { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 100px; font-size: 10px; color: #fff; background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.1); }
 .dot { width: 4px; height: 4px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 6px #3ddc84; animation: dotPulse 2s infinite alternate; }
 @keyframes dotPulse { 0% { opacity: .5; box-shadow: 0 0 2px #3ddc84; transform: scale(.8); } 100% { opacity: 1; box-shadow: 0 0 10px #3ddc84; transform: scale(1.2); } }
 .quote { font-size: 10.5px; color: #a0b0d0; font-style: italic; opacity: .9; text-shadow: 0 1px 4px #000; }
 
-.btns { position: relative; z-index: 11; display: flex; flex-direction: column; gap: 10px; }
+.btns { position: relative; z-index: 11; display: flex; flex-direction: column; gap: 10px; flex: 1; }
 .btn { position: relative; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; overflow: hidden; text-decoration: none; color: var(--text); background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255,255,255,.08); transition: transform 0.2s; cursor: pointer; }
 .btn:hover { background: rgba(0, 0, 0, 0.4); border-color: rgba(255,255,255,.15); }
 .btn:active { transform: scale(0.96); background: rgba(255,255,255,0.08); }
@@ -38,36 +54,12 @@ h1 { margin-bottom: 6px; font-size: 20px; font-weight: 900; letter-spacing: 1px;
 .row-3 { font-size: 10.5px; color: rgba(214,226,255,.5); }
 .label { font-size: 13.5px; font-weight: 700; white-space: nowrap; }
 
-/* ================= 美化标识（精致胶囊） ================= */
-.tag { 
-  display: inline-flex; 
-  align-items: center; 
-  padding: 2px 8px; 
-  border-radius: 100px; 
-  font-size: 9.5px; 
-  font-weight: 800; 
-  line-height: 1;
-  letter-spacing: 0.5px;
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-}
-.tag-vpn { color: #ffca6b; background: linear-gradient(135deg, rgba(255,170,40,.2), rgba(255,170,40,.05)); border: 1px solid rgba(255,170,40,.35); }
-.tag-paid { color: #ff6b6b; background: linear-gradient(135deg, rgba(255,107,107,.2), rgba(255,107,107,.05)); border: 1px solid rgba(255,107,107,.35); }
-.tag-free { color: #3ddc84; background: linear-gradient(135deg, rgba(61,220,132,.2), rgba(61,220,132,.05)); border: 1px solid rgba(61,220,132,.35); }
-
-/* 已解锁状态：发光胶囊 */
-.tag-paid.unlocked { 
-  color: #3ddc84; 
-  background: linear-gradient(135deg, rgba(61,220,132,.25), rgba(61,220,132,.08)); 
-  border: 1px solid rgba(61,220,132,.5); 
-  box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 0 10px rgba(61,220,132,.2);
-  animation: capsuleGlow 2s infinite alternate;
-}
-@keyframes capsuleGlow {
-  0% { box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 0 5px rgba(61,220,132,.2); }
-  100% { box-shadow: inset 0 1px 2px rgba(255,255,255,0.3), 0 0 15px rgba(61,220,132,.5); }
-}
-
-/* 更新提示徽标 */
+.tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 100px; font-size: 9.5px; font-weight: 800; line-height: 1; letter-spacing: 0.5px; transition: all 0.4s; }
+.tag-vpn { color: #ffca6b; background: rgba(255,170,40,.15); border: 1px solid rgba(255,170,40,.35); }
+.tag-paid { color: #ff6b6b; background: rgba(255,107,107,.15); border: 1px solid rgba(255,107,107,.35); }
+.tag-free { color: #3ddc84; background: rgba(61,220,132,.15); border: 1px solid rgba(61,220,132,.35); }
+.tag-paid.unlocked { color: #3ddc84; background: rgba(61,220,132,.25); border: 1px solid rgba(61,220,132,.5); animation: capsuleGlow 2s infinite alternate; }
+@keyframes capsuleGlow { 0% { box-shadow: 0 0 5px rgba(61,220,132,.2); } 100% { box-shadow: 0 0 15px rgba(61,220,132,.5); } }
 .update-badge { display: inline-flex; align-items: center; gap: 4px; padding: 1px 6px; border-radius: 6px; font-size: 9px; font-weight: 700; color: #00e5ff; background: rgba(0,229,255,.1); border: 1px solid rgba(0, 229, 255, 0.25); animation: floatBadge 2.5s infinite; }
 .update-dot { width: 4px; height: 4px; border-radius: 50%; background: #00e5ff; box-shadow: 0 0 5px #00e5ff; }
 @keyframes floatBadge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
@@ -80,91 +72,144 @@ h1 { margin-bottom: 6px; font-size: 20px; font-weight: 900; letter-spacing: 1px;
 .btn-tg { --accent: #29b6f6; } .btn-tg .icon { background: rgba(41,182,246,.15); }
 .btn-key { --accent: #eab308; } .btn-key .icon { background: rgba(234,179,8,.15); }
 .foot { position: relative; z-index: 11; margin-top: 16px; text-align: center; font-size: 10px; color: rgba(214,226,255,.4); }
+
+/* ================= 内部新界面视图 ================= */
+.view-header { display: flex; align-items: center; margin-bottom: 24px; }
+.back-icon { 
+  width: 32px; height: 32px; border-radius: 50%; 
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.05);
+  display: grid; place-items: center; cursor: pointer; 
+  color: #fff; margin-right: 12px; transition: all 0.2s; 
+}
+.back-icon:active { transform: scale(0.9); background: rgba(255,255,255,0.2); }
+.view-title { font-size: 18px; font-weight: bold; color: #fff; }
+
+.verify-content { display: flex; flex-direction: column; align-items: center; width: 100%; animation: fadeIn 0.3s ease; padding-bottom: 20px; }
+.input-group { position: relative; margin-bottom: 16px; width: 100%; }
+input { width: 100%; padding: 14px 44px; border-radius: 14px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 16px; text-align: center; outline: none; font-family: inherit; letter-spacing: 2px; box-sizing: border-box; }
+input:focus { border-color: rgba(59,157,255,0.6); box-shadow: 0 0 20px rgba(59,157,255,0.3); background: rgba(0,0,0,0.5); }
+.eye { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; display: grid; place-items: center; background: transparent; border: none; color: rgba(255,255,255,.5); cursor: pointer; }
+.eye svg { width: 20px; height: 20px; }
+.eye.active svg { color: #3b9dff; }
+
+.err { color: #ff4d4d; font-size: 12px; height: 20px; margin-bottom: 12px; opacity: 0; transition: opacity .3s; font-weight: 500; }
+.err.show { opacity: 1; }
+button.verify { width: 100%; padding: 15px; border-radius: 14px; background: linear-gradient(180deg, #3b9dff, #2f6bff); color: #fff; border: none; font-size: 15px; font-weight: bold; cursor: pointer; margin-bottom: 10px; transition: transform 0.2s; }
+button.verify:active:not(:disabled) { transform: scale(0.96); }
+button.verify:disabled { background: #2a3245; color: rgba(255,255,255,.3); cursor: not-allowed; }
+
+.qr-container { position: relative; display: inline-block; margin-bottom: 10px; padding: 3px; border-radius: 20px; background: linear-gradient(135deg, #8b5cf6, #29b6f6, #eab308); }
+.qr-wrap { position: relative; background: #fff; padding: 10px; border-radius: 17px; overflow: hidden; width: 210px; height: 210px; display: flex; align-items: center; justify-content: center; }
+.qr-wrap img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+.scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #8b5cf6, #eab308, transparent); animation: scan 3s infinite; z-index: 10; }
+@keyframes scan { 0% { top: -5%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 105%; opacity: 0; } }
+
+.btn-loading { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: btnSpin 0.6s linear infinite; margin-right: 6px; }
+@keyframes btnSpin { to { transform: rotate(360deg); } }
+.shake { animation: shake 0.4s; }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 </style>
 </head>
 <body>
+
 <div class="nebula"></div><div class="stars"></div><div class="planet" id="planet-bg"></div><div class="orb orb-1"></div><div class="orb orb-2"></div>
 
 <main class="card">
-  <div class="card-inner">
-    <div class="notice-bar"><span class="notice-icon">📢</span><div class="notice-content"><div class="notice-track" id="noticeTrack"></div></div></div>
-    <header class="head">
-      <div class="logo">1+</div>
-      <h1>满天星 <span class="brand">OnePlus</span></h1>
-      <div class="meta-group"><div class="meta"><span class="dot"></span>资源已就绪 · 点击直达</div><div class="quote" id="dailyQuote">满天星河，你是人间理想。</div></div>
-    </header>
-    <nav class="btns">
-      <!-- 补齐了盒子图标的交叉线 -->
-      <a class="btn btn-suki" href="suki.html">
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
-        <span class="text">
-          <span class="row-1">
-            <span class="label">获取 SukiSU</span>
-            <span id="sukiTag" class="tag tag-paid">收费</span>
+  <div class="card-inner" id="mainCardInner">
+    
+    <!-- 视图 1：首页列表 -->
+    <div class="view-container" id="viewList">
+      <div class="notice-bar"><span class="notice-icon">📢</span><div class="notice-content"><div class="notice-track" id="noticeTrack"></div></div></div>
+      <header class="head">
+        <div class="logo">1+</div>
+        <h1>满天星 <span class="brand">OnePlus</span></h1>
+        <div class="meta-group"><div class="meta"><span class="dot"></span>资源已就绪 · 点击直达</div><div class="quote" id="dailyQuote">满天星河，你是人间理想。</div></div>
+      </header>
+      <nav class="btns">
+        <a class="btn btn-suki" href="javascript:void(0)" onclick="handleSukiClick(this)">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
+          <span class="text">
+            <span class="row-1"><span class="label">获取 SukiSU</span><span id="sukiTag" class="tag tag-paid">收费</span></span>
+            <span class="row-2"><span class="update-badge"><span class="update-dot"></span>有更新 · 10月31日</span></span>
+            <span class="row-3">购买后获取</span>
           </span>
-          <span class="row-2"><span class="update-badge"><span class="update-dot"></span>有更新 · 10月31日</span></span>
-          <span class="row-3">购买后获取</span>
-        </span>
-        <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
-      </a>
-      
-      <!-- 补齐了礼物盒图标的丝带线 -->
-      <a class="btn btn-baka" href="https://1816791544.share.123pan.cn/123pan/YXhyVv-ru7KH" target="_blank">
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span>
-        <span class="text">
-          <span class="row-1">
-            <span class="label">获取 BakaSU</span>
-            <span class="tag tag-free">限免</span>
+          <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </a>
+        <a class="btn btn-baka" href="https://1816791544.share.123pan.cn/123pan/YXhyVv-ru7KH" target="_blank">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span>
+          <span class="text">
+            <span class="row-1"><span class="label">获取 BakaSU</span><span class="tag tag-free">限免</span></span>
+            <span class="row-2"><span class="update-badge"><span class="update-dot"></span>有更新 · 10月31日</span></span>
+            <span class="row-3">测试限免</span>
           </span>
-          <span class="row-2"><span class="update-badge"><span class="update-dot"></span>有更新 · 10月31日</span></span>
-          <span class="row-3">测试限免</span>
-        </span>
-        <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
-      </a>
-      
-      <!-- 补齐了盾牌图标的细节 -->
-      <a class="btn btn-env" href="https://www.123684.com/s/YXhyVv-4Yx2H" target="_blank">
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
-        <span class="text">
-          <span class="row-1">
-            <span class="label">获取环境隐藏模块</span>
-            <span class="tag tag-free">免费</span>
+          <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </a>
+        <a class="btn btn-env" href="https://www.123684.com/s/YXhyVv-4Yx2H" target="_blank">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
+          <span class="text">
+            <span class="row-1"><span class="label">获取环境隐藏模块</span><span class="tag tag-free">免费</span></span>
+            <span class="row-3">前往 123 云盘下载</span>
           </span>
-          <span class="row-3">前往 123 云盘下载</span>
-        </span>
-        <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
-      </a>
-      
-      <!-- 补齐了聊天气泡图标 -->
-      <a class="btn btn-qq" href="https://pd.qq.com/s/1yattoxwb?b=9" target="_blank">
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
-        <span class="text"><span class="row-1"><span class="label">进入官方社区</span></span><span class="row-3">加入我们的交流频道</span></span>
-        <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
-      </a>
-      
-      <!-- 飞机图标 -->
-      <a class="btn btn-tg" href="https://t.me/OnePlusXingQiu" target="_blank">
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
-        <span class="text">
-          <span class="row-1">
-            <span class="label">进入官方TG社区</span>
-            <span class="tag tag-vpn">需VPN</span>
+          <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </a>
+        <a class="btn btn-qq" href="https://pd.qq.com/s/1yattoxwb?b=9" target="_blank">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
+          <span class="text"><span class="row-1"><span class="label">进入官方社区</span></span><span class="row-3">加入我们的交流频道</span></span>
+          <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </a>
+        <a class="btn btn-tg" href="https://t.me/OnePlusXingQiu" target="_blank">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
+          <span class="text">
+            <span class="row-1"><span class="label">进入官方TG社区</span><span class="tag tag-vpn">需VPN</span></span>
+            <span class="row-3">Telegram 频道 · 需网络代理</span>
           </span>
-          <span class="row-3">Telegram 频道 · 需网络代理</span>
-        </span>
-        <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
-      </a>
-      
-      <!-- 钥匙图标 -->
-      <a class="btn btn-key" href="key.html">
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></span>
-        <span class="text"><span class="row-1"><span class="label">获取密钥</span></span><span class="row-3">扫码联系获取</span></span>
-        <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
-      </a>
-    </nav>
-    <footer class="foot"><div>链接均在新标签页打开</div><div>✨ 满天星守护者 · 感谢你的到来 ✨</div></footer>
+          <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </a>
+        <a class="btn btn-key" href="javascript:void(0)" onclick="showView('key')">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></span>
+          <span class="text"><span class="row-1"><span class="label">获取密钥</span></span><span class="row-3">扫码联系获取</span></span>
+          <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </a>
+      </nav>
+      <footer class="foot"><div>链接均在新标签页打开</div><div>✨ 满天星守护者 · 感谢你的到来 ✨</div></footer>
+    </div>
+
+    <!-- 视图 2：Suki 验证界面 -->
+    <div class="view-container" id="viewSuki" style="display: none;">
+      <div class="view-header">
+        <div class="back-icon" onclick="showView('list')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </div>
+        <div class="view-title">SukiSU 验证</div>
+      </div>
+      <div class="verify-content" id="sukiCard">
+        <p style="margin-bottom: 24px; color: rgba(255,255,255,0.7); font-size: 13px; text-align: center;">该资源为付费内容<br>请输入您购买后获取的密钥</p>
+        <div class="input-group">
+          <input type="password" id="pass" placeholder="请输入密钥" autocomplete="off">
+          <button type="button" class="eye" id="eyeBtn"><svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button>
+        </div>
+        <div class="err" id="err"></div>
+        <button class="verify" id="verifyBtn">验证并前往下载</button>
+      </div>
+    </div>
+
+    <!-- 视图 3：二维码获取界面 -->
+    <div class="view-container" id="viewKey" style="display: none;">
+      <div class="view-header">
+        <div class="back-icon" onclick="showView('list')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </div>
+        <div class="view-title">获取密钥</div>
+      </div>
+      <div class="verify-content">
+        <p style="margin-bottom: 24px; color: rgba(255,255,255,0.7); font-size: 13px; text-align: center;">扫描下方二维码联系管理员<br>购买并获取验证密钥</p>
+        <div class="qr-container"><div class="qr-wrap"><img src="qrcode.jpg?v=3" alt="扫码联系管理员获取密钥" loading="lazy"><div class="scan-line"></div></div></div>
+      </div>
+    </div>
+
   </div>
 </main>
+
 <script src="common.js"></script>
 <script>
   const NOTICES = ["最新通知：SukiSU 和 BakaSU 均已更新，更新日期为 10月31日 21:00，感谢大家的支持！"];
@@ -180,6 +225,213 @@ h1 { margin-bottom: 6px; font-size: 20px; font-weight: 900; letter-spacing: 1px;
     sukiTag.classList.add('unlocked');
     sukiTag.innerHTML = '已解锁';
   }
+
+  // ==== 视图切换逻辑 ====
+  const viewList = document.getElementById('viewList');
+  const viewSuki = document.getElementById('viewSuki');
+  const viewKey = document.getElementById('viewKey');
+
+  function showView(type) {
+    viewList.style.display = 'none';
+    viewSuki.style.display = 'none';
+    viewKey.style.display = 'none';
+
+    if (type === 'list') viewList.style.display = 'flex';
+    if (type === 'suki') viewSuki.style.display = 'flex';
+    if (type === 'key') viewKey.style.display = 'flex';
+  }
+
+  const KEY_HASH   = "380423258a33c2c583868f680484ac9741846f583a2730882f0ba379efd84c5b";
+  const SALT_B64   = "6iRrrBIgb+VAeaumRGCFoQ==";
+  const IV_B64     = "bH3f4QlL0CRHRyyD";
+  const CIPHER_B64 = "Y8BLD3lFaoACJJ4Soh3SGJcMIN4kbVnlmmmk8BgMPW1jBuwKhX+V3H4hdEYIKmE7qm+teDQ=";
+
+  const b64ToU8 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+
+  async function handleSukiClick(element) {
+    const savedKey = localStorage.getItem('suki_saved_key');
+    if (savedKey) {
+      const arrow = element.querySelector('.arrow');
+      const oldHtml = arrow.innerHTML;
+      arrow.innerHTML = '<span class="btn-loading"></span>';
+      
+      try {
+        const enc = new TextEncoder();
+        const baseKey = await crypto.subtle.importKey('raw', enc.encode(savedKey), 'PBKDF2', false, ['deriveKey']);
+        const aesKey = await crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt: b64ToU8(SALT_B64), iterations: 100000, hash: 'SHA-256' },
+          baseKey, { name: 'AES-GCM', length: 256 }, false, ['decrypt']
+        );
+        const pt = await crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: b64ToU8(IV_B64) },
+          aesKey, b64ToU8(CIPHER_B64)
+        );
+        const url = new TextDecoder().decode(pt);
+        window.location.href = url;
+        return;
+      } catch (e) {
+        localStorage.removeItem('suki_saved_key');
+        localStorage.removeItem('suki_is_paid');
+        arrow.innerHTML = oldHtml;
+      }
+    }
+    showView('suki');
+    checkLockStatus(); // 进面板时检查一次锁定状态
+  }
+
+  const MAX_TRIES = 5;
+  const LOCK_TIME = 10 * 60 * 1000;
+  const passInput = document.getElementById('pass');
+  const verifyBtn = document.getElementById('verifyBtn');
+  const errText = document.getElementById('err');
+  const eyeBtn = document.getElementById('eyeBtn');
+  const eyeIcon = document.getElementById('eyeIcon');
+  let isVerifying = false;
+  let timerInterval = null;
+
+  const eyeOpen = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"></path><circle cx="12" cy="12" r="3"></circle>`;
+  const eyeClosed = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`;
+
+  eyeBtn.addEventListener('click', () => {
+    if (passInput.type === 'password') {
+      passInput.type = 'text';
+      eyeIcon.innerHTML = eyeOpen;
+      eyeBtn.classList.add('active');
+    } else {
+      passInput.type = 'password';
+      eyeIcon.innerHTML = eyeClosed;
+      eyeBtn.classList.remove('active');
+    }
+  });
+
+  const u8ToHex = u8 => [...u8].map(b => b.toString(16).padStart(2, '0')).join('');
+
+  verifyBtn.addEventListener('click', async () => {
+    if (verifyBtn.disabled || isVerifying) return;
+    const val = passInput.value.trim();
+    if (!val) return;
+
+    isVerifying = true;
+    verifyBtn.disabled = true;
+    const originalText = verifyBtn.innerHTML;
+    verifyBtn.innerHTML = '<span class="btn-loading"></span> 验证中...';
+    errText.classList.remove('show');
+
+    try {
+      const enc = new TextEncoder();
+      const digest = await crypto.subtle.digest('SHA-256', enc.encode(val));
+      
+      if (u8ToHex(new Uint8Array(digest)) !== KEY_HASH) { 
+        verifyBtn.innerHTML = originalText;
+        verifyBtn.disabled = false;
+        isVerifying = false;
+        document.getElementById('sukiCard').classList.add('shake');
+        setTimeout(() => document.getElementById('sukiCard').classList.remove('shake'), 400);
+        handleFail(); 
+        return; 
+      }
+
+      const baseKey = await crypto.subtle.importKey('raw', enc.encode(val), 'PBKDF2', false, ['deriveKey']);
+      const aesKey = await crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: b64ToU8(SALT_B64), iterations: 100000, hash: 'SHA-256' },
+        baseKey, { name: 'AES-GCM', length: 256 }, false, ['decrypt']
+      );
+      const pt = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: b64ToU8(IV_B64) },
+        aesKey, b64ToU8(CIPHER_B64)
+      );
+      const url = new TextDecoder().decode(pt);
+
+      localStorage.setItem('suki_is_paid', 'true');
+      localStorage.setItem('suki_saved_key', val);
+      localStorage.removeItem('suki_fail_count');
+      localStorage.removeItem('suki_lock_until');
+      
+      const sukiTag = document.getElementById('sukiTag');
+      sukiTag.classList.add('unlocked');
+      sukiTag.innerHTML = '已解锁';
+
+      verifyBtn.innerHTML = '<span class="btn-loading"></span> 跳转中...';
+      setTimeout(() => { window.location.href = url; }, 300);
+
+    } catch (e) {
+      verifyBtn.innerHTML = originalText;
+      verifyBtn.disabled = false;
+      isVerifying = false;
+      handleFail();
+    }
+  });
+
+  function handleFail() {
+    let failCount = parseInt(localStorage.getItem('suki_fail_count') || '0') + 1;
+    localStorage.setItem('suki_fail_count', failCount);
+    const remain = MAX_TRIES - failCount;
+
+    document.getElementById('sukiCard').classList.add('shake');
+    setTimeout(() => document.getElementById('sukiCard').classList.remove('shake'), 400);
+
+    if (failCount >= MAX_TRIES) {
+      localStorage.setItem('suki_lock_until', Date.now() + LOCK_TIME);
+      checkLockStatus();
+    } else {
+      showError(`密钥错误，您还有 ${remain} 次尝试机会`);
+      passInput.value = '';
+      passInput.focus();
+      verifyBtn.disabled = false; 
+    }
+  }
+
+  function showError(msg) { 
+    errText.innerText = msg; 
+    errText.classList.add('show'); 
+  }
+
+  function checkLockStatus() {
+    const lockUntil = localStorage.getItem('suki_lock_until');
+    if (lockUntil && Date.now() < lockUntil) {
+      passInput.disabled = true;
+      verifyBtn.disabled = true;
+      if (timerInterval) clearInterval(timerInterval);
+      
+      const updateTimer = () => {
+        const left = lockUntil - Date.now();
+        if (left <= 0) {
+          clearInterval(timerInterval);
+          localStorage.removeItem('suki_fail_count');
+          localStorage.removeItem('suki_lock_until');
+          unlockInputs();
+        } else {
+          const m = Math.floor(left / 60000);
+          const s = Math.floor((left % 60000) / 1000);
+          showError(`错误次数过多，请 ${m}分${s < 10 ? '0'+s : s}秒 后重试`);
+        }
+      };
+      
+      updateTimer();
+      timerInterval = setInterval(updateTimer, 1000);
+      
+    } else {
+      if (lockUntil) {
+        localStorage.removeItem('suki_fail_count');
+        localStorage.removeItem('suki_lock_until');
+      }
+      unlockInputs();
+    }
+  }
+
+  function unlockInputs() {
+    passInput.disabled = false;
+    verifyBtn.disabled = false;
+    errText.classList.remove('show');
+    verifyBtn.innerHTML = '验证并前往下载';
+  }
+
+  passInput.addEventListener('keydown', e => { 
+    if (e.key === 'Enter' && !verifyBtn.disabled) {
+      verifyBtn.click(); 
+    }
+  });
+  passInput.addEventListener('input', () => errText.classList.remove('show'));
 </script>
 </body>
 </html>
