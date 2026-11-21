@@ -136,30 +136,29 @@ body {
   100% { transform: translateX(5%) scale(1.1); opacity: 1; }
 }
 
-/* ================= 5. 星球与星环 ================= */
+/* ================= 5. 3D 星球容器 ================= */
 .planet {
   position: fixed;
-  top: 15%; right: -80px;
-  width: 250px; height: 250px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #5c8dff, #1a2a6c, #04060a);
-  box-shadow: inset -20px -20px 40px rgba(0,0,0,0.8);
-  z-index: 1;
+  top: 6%;
+  right: -80px;
+  width: 500px;
+  height: 500px;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
   pointer-events: none;
+  z-index: 1;
 }
-.planet::after {
-  content: '';
-  position: absolute;
-  inset: -30px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(92, 141, 255, 0.5);
-  border-bottom-color: rgba(92, 141, 255, 0.9);
-  border-left-color: rgba(92, 141, 255, 0.7);
-  box-shadow: 0 0 15px rgba(92, 141, 255, 0.2), inset 0 0 15px rgba(92, 141, 255, 0.2);
-  transform: rotate(-20deg);
-  animation: ringSpin 20s linear infinite;
+#planet3d { display: block; width: 100%; height: 100%; }
+
+@media (max-width: 480px) {
+  .planet {
+    width: 420px;
+    height: 420px;
+    right: -100px;
+    top: 4%;
+  }
 }
-@keyframes ringSpin { to { transform: rotate(340deg); } }
 
 .orb { position: fixed; z-index: 1; border-radius: 50%; filter: blur(120px); pointer-events: none; opacity: 0.08; }
 .orb-1 { width: 350px; height: 350px; background: #2f6bff; bottom: -150px; left: -150px; }
